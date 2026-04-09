@@ -49,4 +49,4 @@ tags:
 - **Curso actual:** [Link al curso que estés siguiendo]
 
 ---
-#etiquetas: #caminante/dev #javascript #fullstack #estudio #caminante 
+#etiquetas: #caminante/dev #javascript #fullstack #estudio #caminante
