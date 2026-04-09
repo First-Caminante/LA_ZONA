@@ -1,0 +1,65 @@
+{
+  "collapse-filter": true,
+  "search": "",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": true,
+  "colorGroups": [
+    {
+      "query": "path:01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN  ",
+      "color": {
+        "a": 1,
+        "rgb": 10495783
+      }
+    },
+    {
+      "query": "path:00SISTEMA_DE_ZONA/TEMPLATES  ",
+      "color": {
+        "a": 1,
+        "rgb": 0
+      }
+    },
+    {
+      "query": "path:01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT  ",
+      "color": {
+        "a": 1,
+        "rgb": 16113664
+      }
+    },
+    {
+      "query": "file:PLUGINS USADOS",
+      "color": {
+        "a": 1,
+        "rgb": 16777215
+      }
+    },
+    {
+      "query": "file:LENGUAJE_MARKDOWN.md",
+      "color": {
+        "a": 1,
+        "rgb": 65450
+      }
+    },
+    {
+      "query": "file:CARACTERES HEXADECIMAL PARA LINUX",
+      "color": {
+        "a": 1,
+        "rgb": 327424
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": true,
+  "textFadeMultiplier": -1.6,
+  "nodeSizeMultiplier": 0.925040690104167,
+  "lineSizeMultiplier": 2.43076985677083,
+  "collapse-forces": true,
+  "centerStrength": 0.376708984375,
+  "repelStrength": 10.5550130208333,
+  "linkStrength": 0.902750651041667,
+  "linkDistance": 153,
+  "scale": 0.13348388671875,
+  "close": true
+}

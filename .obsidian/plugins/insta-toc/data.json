@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "bulletType": "decimal",
+    "indentSize": 2,
+    "updateDelay": 2000,
+    "tocTitle": "INDICE",
+    "tocTitleLevel": 1,
+    "excludedHeadingLevels": [],
+    "excludedHeadingText": [],
+    "excludedChars": [
+      "*",
+      "_",
+      "`",
+      "==",
+      "~~",
+      "{",
+      "}",
+      "#",
+      "\\"
+    ]
+  },
+  "tocBlockCollapseState": {
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_1 FUNDAMENTOS_MARKDOWN.md": false
+  },
+  "tocFoldState": {
+    "00SISTEMA_DE_ZONA/PLUGINS USADOS.md::1::PLUGINS USADOS#INSTATOC PARA INDICES BASADOS EN TITULOS": false,
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_1 FUNDAMENTOS_MARKDOWN.md::1::FASE_1 FUNDAMENTOS_MARKDOWN#CONCEPTO FUNDAMENTAL": false,
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/LENGUAJE_MARKDOWN.md::2::LENGUAJE_MARKDOWN#🟢 Fase 1: Fundamentos y Estructura": true,
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/LENGUAJE_MARKDOWN.md::3::LENGUAJE_MARKDOWN#🟡 Fase 2: Organización de la Información": true,
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/LENGUAJE_MARKDOWN.md::5::LENGUAJE_MARKDOWN#🔴 Fase 4: Código y Estructuras Complejas": false
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "cssTheme": "Primary",
+  "theme": "obsidian",
+  "accentColor": "#594836",
+  "baseFontSizeAction": false,
+  "baseFontSize": 15,
+  "interfaceFontFamily": "IosevkaTerm Nerd Font",
+  "textFontFamily": "IosevkaTerm Nerd Font",
+  "monospaceFontFamily": "IosevkaTerm Nerd Font"
+}
