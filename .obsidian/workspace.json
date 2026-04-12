@@ -10,7 +10,7 @@
           {
             "id": "ff847c4ba8b9cd8f",
             "type": "tabs",
-            "dimension": 62.339331619537276,
+            "dimension": 63.9686684073107,
             "children": [
               {
                 "id": "4727d18900686f31",
@@ -18,12 +18,12 @@
                 "state": {
                   "type": "markdown",
                   "state": {
-                    "file": "05_DIARIO/2026/ABRIL/JUEVES_9_ABRIL.md",
+                    "file": "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/1_Get_Started.md",
                     "mode": "source",
                     "source": false
                   },
                   "icon": "lucide-file",
-                  "title": "JUEVES_9_ABRIL"
+                  "title": "1_Get_Started"
                 }
               }
             ]
@@ -31,7 +31,7 @@
           {
             "id": "382d8e487175308c",
             "type": "split",
-            "dimension": 37.660668380462724,
+            "dimension": 36.0313315926893,
             "children": [
               {
                 "id": "1f8231cbebeb7dd1",
@@ -132,8 +132,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 214
   },
   "right": {
     "id": "e2e656614b709629",
@@ -224,12 +223,15 @@
   },
   "active": "8bc6da00e3b8df5f",
   "lastOpenFiles": [
+    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/1_Get_Started.md",
+    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/01_Manual_Paso_a_Paso.md",
+    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_1_EL_LENGUAJE.md",
+    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_3_ARTICULOS_ADICIONALES.md",
+    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_2_EL_NAVEGADOR.md",
     "05_DIARIO/2026/ABRIL/JUEVES_9_ABRIL.md",
     "es/docs/Web/JavaScript/Reference/Statements/switch.md",
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/4_Types_Grammar.md",
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/2_Scope_Closures.md",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/1_Get_Started.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/01_Manual_Paso_a_Paso.md",
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/6_ES_Next_Beyond.md",
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/5_Sync_Async.md",
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/3_Objects_Classes.md",
@@ -245,9 +247,6 @@
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/get-started_fig2.png",
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets",
     "07_RECURSOS/INFORMATICA/YDKJS_Obsidian",
-    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_1_EL_LENGUAJE.md",
-    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_3_ARTICULOS_ADICIONALES.md",
-    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_2_EL_NAVEGADOR.md",
     "07_RECURSOS/INFORMATICA/Apuntes_Obsidian",
     "07_RECURSOS/INFORMATICA/JS_INFO_PARA_NOTEBOOK/PARTE_1_EL_LENGUAJE.md",
     "07_RECURSOS/INFORMATICA/JS_INFO_PARA_NOTEBOOK/PARTE_3_TEMAS_AVANZADOS.md",
