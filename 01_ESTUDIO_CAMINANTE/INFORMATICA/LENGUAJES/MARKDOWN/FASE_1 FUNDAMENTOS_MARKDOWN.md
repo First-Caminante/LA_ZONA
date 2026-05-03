@@ -35,6 +35,7 @@ levels:
     - 4.- REGLAS HORIZONTALES (SEPARADORES)
         - ADVERTENCIA:
     - encabezado mal hecho
+        - INTERPRETE
 ```
 
 # CONCEPTO FUNDAMENTAL
@@ -58,7 +59,8 @@ Si escribes una línea de texto, presionas "Enter" una sola vez y sigues escribi
 Para separar párrafos correctamente, es obligatorio que dejes una línea completamente en blanco entre ellos
 
 Si lo que necesitas es forzar un salto de línea (quebrar la línea) pero manteniéndote dentro del mismo bloque de párrafo, debes presionar la barra espaciadora dos veces al final de la línea antes de presionar "Enter"
-. La indentación y los espacios son vitales para que el motor interprete tus intenciones
+. La indentación y los espacios son vitales para que el motor interprete tus intenciones [interprete](#interprete)
+
 
 ## 3.- ENFASIS TEXTUAL (TIPOGRAFIA)
 
@@ -91,5 +93,12 @@ ASEGURATE DE QUE HAYA UN SALTO DE LINEA ANTES DE APLICAR ESTE FORMATO PUES SI NO
 encabezado mal hecho
 ---
 
+
+
+***negrita y cursiva a la vez tres asteriscos***
+
+
+#### INTERPRETE
+es como que no compila pero si entiende el codigo es como python java u otros que no son compilados
 
 

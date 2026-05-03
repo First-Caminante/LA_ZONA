@@ -1,1 +1,19 @@
 # LA_ZONA
+
+
+## FLUJO DE ESTUDIO 
+
+COMO ESTUDIO UN TEMA??
+
+- paso 1 : consigo material de lo mejor...
+- paso 2 : subo el material a notebooklm
+- PASO 3 : PROMPTEAR NOTENOOK PERZONALIZADO...
+- paso 4 : conseguir temario o ruta de aprendizaje profundo...
+	- PEDIR EN FASES: FASE 1, FASE 2...
+	- POR CADA FASE PEDIR INDICE: INDICE FASE 1, INDICE FASE N..
+		- PEDIR A GEMINI INDICE DE LA FASE DICHA...
+- paso 5 : ESTUDIAR FASE 1 O 0 Y ANOTAR EN OBSIDAN
+	- IR POR RUTA DE INDICE
+	- PEDIR CANVAS CON GRAFICOS EXPLICADOS 
+	- RAZONAR
+- IR FASE SIGUIENTE

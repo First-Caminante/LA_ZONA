@@ -1,0 +1,105 @@
+---
+Area: DESARROLLO PERSONAL
+tema: LA ZONA
+tags:
+  - "#CONCENTRACION"
+  - "#FLUJO"
+  - "#MENTE"
+fecha: 2026-04-16
+---
+
+## COMÓ ENTRAR EN LA ZONA A FULL?
+
+Es el recurso clave
+### Que es la productividad??
+
+productividad = tiempo * foco
+
+
+## FASE 1 RESETEO
+
+El foco no es restricciones, claro es disciplina pero cada restriccion gasta bateria, mejor reduce friccion...
+
+cerebro es un emisor de frecuencia, en la mañana se activa una frecuencia ya memorizada o como te levantas...
+
+>[!danger] Que haces en la mañana??
+>No me digas que despiertas con puro estimulo??
+>el cerebro compara el nivel de estimulo con el anterior, evita la estimulacion mas que todo al principio del dia
+
+### ENTONCES QUE HACEMOS? ( SOBRECARGA DOPAMINICA)
+
+Lo bonito para despues, primero trabaja el lo hace despues de las 7 de la tarde...
+consiste en mantener la segregacion de dopamina como una brasa de fuego que no debe consumir todo de principio en el dia sino intensificarse en la noche despues del trabajo o aveces no!!!
+
+```js
+
+// crep yo que mucho depende de la pasion que tengas por lo que haces de cuanta dopamina necesites al final del dia
+// o cuanto dolor tienes!!!
+```
+
+DESARROLLO PERSONAL -> DESARROLLO PROFESIONAL;
+
+ESE ES EL FLUJO QUE DEBES SEGUIR SIEMPRE...
+
+
+## FASE 2 ACTIVACION
+
+ANTES DE CONSUMIR EL MUNDO PREPARATE PARA EL MUNDO AL DESPERTAR
+- SIN MUSICA
+- SIN SCROLL
+- SIN NEGOCIACION
+- SIN DOPAMINA BARATA 
+
+### TRES HABITOS
+- **MEDITACION** : EJERCICIO POTENTE PARA EL FOCO "CONTROLAS PENSAMIENTOS" (TE OBSERVAS A TI MISMO)
+- **GATILLO MENTAL** : POR EJEMPLO UN RITUAL O UNA SEÑAL QUE HACE QUE TRABAJES O ESTUDIES PARA QUE SE ENTRE EN TU SUBCCONCIENTE CREA TUS PROPIAS SEÑALES... 
+- **ALTER-EGO** : COBE BRAYAN -> ALTER EGO, POR EJEMPLO TU YO IDEAL QUIEN ES COMO ES QUE HACE CUANDO TIENE UNA DISTRACCION "ES REALMENTE ALGUIEN QUE ADMIRES" Y SABES QUE TU SERAS ESE CUANDO ENTRES EN ESE ESTADO DE LA ZONA
+
+## FASE 3 ETERNO PRESENTE
+
+CONOCETE A TI MISMO SIEMPRE
+CADA UNO TIENE FASES DE ENERGIA NATURALES A QUE HORAS ESTAS ACTIVO A FULL A QUE HORAS NO??
+
+- DE NUEVO -> **OBSERVATE A TI MISMOOOOOOOOOOOOOOOO!!!!!**
+
+OLVIDATE DE TUS LISTAS DE TAREAS ENORMES Y SOLO DEDICATE A LOS QUE TOCAN HOY SOLO ESAS DALE A MUERTE 
+
+TAMBIEN TE RECOMIENDO DESCANSAR
+
+>[!DANGER] DESCANSO NO ES JUGAR Y DOPAMINA
+>EL DESCANSO ES NEUTRO (MEDITAR, LEER, COMER FRUTA)
+>BAJA ESTIMULACION
+
+
+## FASE 4 CONDICIONAMIENTO
+
+TODO ESO PUEDE FUNCIONARTE UN MES SEMANA O DIAS
+
+DEBES MODIFICAR LO SIGUIENTE....
+
+TU ENTORNO ES DEMASIADO IMPORTANTE APLICA HABITOS ATOMICOS (QUE TU ENTORNO SEA UN LUGAR DONDE SEA IMPOSIBLE SER UN MEDIOCRE)
+
+- LIMPIO ORDENADO 
+- VACIO
+
+QUE HACES CUANDO DESCANSAS CUANDO NO HACES TRABAJO??
+
+EL FOCO ES UN MODO DE VIDA ERES UNO SOLO 
+- COMO ACTUAS EN TU VIDA PRIVADA ASI SERA EN CASI TODO 
+	- POR ESO ES MUY IMPORTANTE LA BASE
+
+>[!CAUTION] TODO CUENTA
+>RESPETA Y RECUERDA LO QUE DIJO BRIAN TRACY TODO CUENTA 
+>TODO LO QUE HAGAS 
+>TODO LO QUE VEAS
+>TODO LO QUE COMAS
+>TODO LO QUE ESCUCHAS
+
+
+
+
+
+
+
+
+ 

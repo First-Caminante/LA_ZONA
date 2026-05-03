@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>El Modelo Mental: Los 3 Actores de JS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0f172a; /* slate-900 */
+        color: #f8fafc; /* slate-50 */
+        overflow-x: hidden;
+      }
+
+      .font-mono {
+        font-family: "Fira Code", monospace;
+      }
+
+      /* Actores y Avatares */
+      .actor-card {
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      .actor-active {
+        transform: translateY(-5px);
+        box-shadow:
+          0 10px 25px -5px rgba(0, 0, 0, 0.5),
+          0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+      .actor-active::after {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        background: linear-gradient(
+          to right,
+          var(--tw-gradient-from),
+          var(--tw-gradient-to)
+        );
+        z-index: -1;
+        opacity: 0.5;
+        animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      /* Globos de diálogo */
+      .bubble {
+        position: relative;
+        background: #1e293b;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: slideUp 0.4s ease forwards;
+        border: 1px solid #334155;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .bubble::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+        border-top-color: #1e293b;
+        border-bottom: 0;
+        margin-left: -10px;
+        margin-bottom: -10px;
+      }
+
+      /* Direcciones de los globos */
+      .bubble-engine::after {
+        left: 50%;
+      }
+      .bubble-compiler::after {
+        left: 20%;
+      }
+      .bubble-scope::after {
+        right: 20%;
+      }
+
+      @keyframes slideUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Memoria Scope */
+      .scope-memory {
+        border: 2px dashed #475569;
+        transition: all 0.3s ease;
+      }
+      .scope-memory.updated {
+        border-color: #f59e0b; /* amber-500 */
+        background-color: rgba(245, 158, 11, 0.05);
+      }
+
+      /* Botón de reproducción */
+      .play-btn {
+        animation: bounce 2s infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(-25%);
+          animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+        }
+        50% {
+          transform: none;
+          animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col items-center py-8 px-4 md:px-8">
+    <header class="max-w-5xl w-full text-center mb-10">
+      <h1 class="text-3xl md:text-5xl font-bold mb-4">
+        El Modelo Mental:
+        <span
+          class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400"
+          >Los 3 Actores</span
+        >
+      </h1>
+      <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+        Descubre cómo el <strong>Motor</strong>, el
+        <strong>Compilador</strong> y el <strong>Scope</strong> interactúan en
+        tiempo real para procesar tu código.
+      </p>
+    </header>
+
+    <main class="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Sección Superior: Los Actores -->
+      <div class="lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Compilador -->
+        <div
+          id="actor-compiler"
+          class="actor-card bg-slate-800 rounded-xl p-6 border border-slate-700 flex flex-col items-center text-center [--tw-gradient-from:#3b82f6] [--tw-gradient-to:#60a5fa]"
+        >
+          <div
+            class="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mb-4 border-2 border-blue-500"
+          >
+            <svg
+              class="w-8 h-8 text-blue-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+              ></path>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-blue-400">El Compilador</h2>
+          <p class="text-sm text-slate-400 mt-2">
+            El amigo del Motor. Hace el trabajo sucio de analizar (parsing) el
+            código fuente y traducirlo a instrucciones.
+          </p>
+        </div>
+
+        <!-- Motor (El Jefe) -->
+        <div
+          id="actor-engine"
+          class="actor-card bg-slate-800 rounded-xl p-6 border border-slate-700 flex flex-col items-center text-center [--tw-gradient-from:#ec4899] [--tw-gradient-to:#f43f5e] transform md:scale-110 z-10 shadow-2xl"
+        >
+          <div
+            class="w-20 h-20 rounded-full bg-pink-500/20 flex items-center justify-center mb-4 border-2 border-pink-500"
+          >
+            <svg
+              class="w-10 h-10 text-pink-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              ></path>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-pink-400">El Motor</h2>
+          <p class="text-sm text-slate-400 mt-2">
+            El jefe absoluto (ej: V8). Coordina todo. Es responsable de la
+            compilación inicial y de la ejecución final del código paso a paso.
+          </p>
+        </div>
+
+        <!-- Scope -->
+        <div
+          id="actor-scope"
+          class="actor-card bg-slate-800 rounded-xl p-6 border border-slate-700 flex flex-col items-center text-center [--tw-gradient-from:#f59e0b] [--tw-gradient-to:#fbbf24]"
+        >
+          <div
+            class="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mb-4 border-2 border-amber-500"
+          >
+            <svg
+              class="w-8 h-8 text-amber-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-amber-400">El Scope</h2>
+          <p class="text-sm text-slate-400 mt-2">
+            El guardián de la memoria. Mantiene un registro estricto de todas
+            las variables declaradas y aplica reglas de acceso.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sección Inferior: La Obra de Teatro -->
+      <div class="lg:col-span-12 grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
+        <!-- Escenario / Código -->
+        <div class="lg:col-span-1 flex flex-col gap-4">
+          <div class="bg-slate-900 rounded-xl border border-slate-700 p-6">
+            <h3
+              class="text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wider"
+            >
+              El Guion (Tu Código)
+            </h3>
+            <div
+              class="font-mono text-2xl bg-slate-950 p-4 rounded-lg border border-slate-800 text-center relative overflow-hidden group"
+            >
+              <span id="code-var" class="transition-colors duration-300"
+                >var</span
+              >
+              <span id="code-a" class="transition-colors duration-300">a</span>
+              <span id="code-eq" class="transition-colors duration-300">=</span>
+              <span id="code-val" class="transition-colors duration-300">2</span
+              >;
+            </div>
+            <p class="text-xs text-slate-500 mt-4 text-center">
+              Aunque lo veas como una sola línea, el motor la divide en dos
+              fases completamente distintas.
+            </p>
+          </div>
+
+          <!-- Control Play -->
+          <button
+            id="start-btn"
+            onclick="startPlay()"
+            class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2 group relative overflow-hidden"
+          >
+            <span class="relative z-10 flex items-center gap-2 text-lg">
+              <svg
+                class="w-6 h-6 play-btn"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              Ejecutar Obra de Teatro
+            </span>
+            <div
+              class="absolute inset-0 bg-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left z-0"
+            ></div>
+          </button>
+
+          <button
+            id="reset-btn"
+            onclick="resetPlay()"
+            class="hidden w-full bg-slate-700 hover:bg-slate-600 text-slate-200 py-3 rounded-xl transition-colors"
+          >
+            Reiniciar
+          </button>
+        </div>
+
+        <!-- Diálogos (El Teatro) -->
+        <div
+          class="lg:col-span-2 bg-slate-800/50 rounded-xl border border-slate-700 p-6 flex flex-col relative min-h-[450px]"
+        >
+          <!-- Indicador de Fase -->
+          <div class="absolute top-4 left-0 right-0 flex justify-center z-10">
+            <div
+              id="phase-badge"
+              class="bg-slate-900 border border-slate-600 px-4 py-1 rounded-full text-sm font-semibold text-slate-400 opacity-0 transition-opacity"
+            >
+              Fase 1: Compilación
+            </div>
+          </div>
+
+          <!-- Contenedor de diálogos -->
+          <div
+            id="dialog-box"
+            class="flex-1 mt-8 space-y-4 overflow-y-auto pr-2 pb-4"
+          >
+            <div
+              class="h-full flex items-center justify-center text-slate-500 italic"
+              id="empty-state"
+            >
+              Presiona "Ejecutar Obra de Teatro" para comenzar...
+            </div>
+          </div>
+
+          <!-- Representación de Memoria Scope -->
+          <div class="mt-4 pt-4 border-t border-slate-700">
+            <div class="flex justify-between items-center mb-2">
+              <h4
+                class="text-sm font-semibold text-amber-400 flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                  ></path>
+                </svg>
+                Registro del Scope (Memoria Global)
+              </h4>
+              <span
+                id="scope-status"
+                class="text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded"
+                >Esperando declaraciones...</span
+              >
+            </div>
+
+            <div
+              id="scope-memory-table"
+              class="scope-memory bg-slate-900 rounded p-4 flex flex-wrap gap-3 min-h-[80px] items-center justify-center"
+            >
+              <span class="text-slate-600 text-sm italic" id="scope-empty-text"
+                >El registro está vacío.</span
+              >
+              <!-- Variables aparecerán aquí -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Utilidades
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      // Elementos UI
+      const dialogBox = document.getElementById("dialog-box");
+      const emptyState = document.getElementById("empty-state");
+      const phaseBadge = document.getElementById("phase-badge");
+      const scopeTable = document.getElementById("scope-memory-table");
+      const scopeEmptyText = document.getElementById("scope-empty-text");
+      const scopeStatus = document.getElementById("scope-status");
+
+      // Actores
+      const actors = {
+        engine: {
+          el: document.getElementById("actor-engine"),
+          color: "text-pink-400",
+          align: "bubble-engine text-center",
+          name: "Motor",
+        },
+        compiler: {
+          el: document.getElementById("actor-compiler"),
+          color: "text-blue-400",
+          align: "bubble-compiler mr-auto",
+          name: "Compilador",
+        },
+        scope: {
+          el: document.getElementById("actor-scope"),
+          color: "text-amber-400",
+          align: "bubble-scope ml-auto",
+          name: "Scope",
+        },
+      };
+
+      // Código resaltado
+      const codeEls = {
+        var: document.getElementById("code-var"),
+        a: document.getElementById("code-a"),
+        eq: document.getElementById("code-eq"),
+        val: document.getElementById("code-val"),
+      };
+
+      let isPlaying = false;
+
+      function setActiveActor(actorKey) {
+        Object.values(actors).forEach((a) =>
+          a.el.classList.remove("actor-active"),
+        );
+        if (actorKey) actors[actorKey].el.classList.add("actor-active");
+      }
+
+      function highlightCode(keys, colorClass) {
+        Object.values(codeEls).forEach(
+          (el) =>
+            (el.className = "transition-colors duration-300 text-slate-600"),
+        ); // dim todo
+        keys.forEach((key) => {
+          codeEls[key].className =
+            `transition-colors duration-300 font-bold ${colorClass}`;
+        });
+      }
+
+      async function addDialog(actorKey, htmlText, delay = 1500) {
+        setActiveActor(actorKey);
+        const actor = actors[actorKey];
+
+        const bubble = document.createElement("div");
+        bubble.className = `bubble ${actor.align} max-w-[80%]`;
+
+        let icon = "";
+        if (actorKey === "engine")
+          icon =
+            '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>';
+        if (actorKey === "compiler")
+          icon =
+            '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>';
+        if (actorKey === "scope")
+          icon =
+            '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>';
+
+        bubble.innerHTML = `
+                <div class="text-xs font-bold ${actor.color} mb-1 flex items-center ${actorKey === "engine" ? "justify-center" : ""}">${icon} ${actor.name}</div>
+                <div class="text-sm text-slate-200">${htmlText}</div>
+            `;
+
+        dialogBox.appendChild(bubble);
+        dialogBox.scrollTop = dialogBox.scrollHeight;
+
+        await sleep(delay);
+      }
+
+      async function updateScopeMemory(variable, value, mode) {
+        scopeTable.classList.add("updated");
+        scopeEmptyText.style.display = "none";
+
+        if (mode === "declare") {
+          const varDiv = document.createElement("div");
+          varDiv.id = `var-${variable}`;
+          varDiv.className =
+            "bg-slate-800 border border-slate-600 rounded px-3 py-2 flex items-center gap-3 transform scale-0 transition-transform duration-300";
+          varDiv.innerHTML = `
+                    <span class="font-mono font-bold text-amber-400">${variable}</span>
+                    <span class="text-slate-500 text-xs">:</span>
+                    <span class="font-mono text-slate-500 text-xs" id="val-${variable}">undefined</span>
+                `;
+          scopeTable.appendChild(varDiv);
+
+          // Animar entrada
+          await sleep(50);
+          varDiv.classList.remove("scale-0");
+          varDiv.classList.add("scale-100");
+
+          scopeStatus.textContent = "Variable registrada.";
+          scopeStatus.className =
+            "text-xs text-amber-400 bg-amber-900/30 px-2 py-1 rounded border border-amber-500/50";
+        } else if (mode === "assign") {
+          const valSpan = document.getElementById(`val-${variable}`);
+          valSpan.textContent = value;
+          valSpan.className = "font-mono text-emerald-400 font-bold";
+
+          // Destello verde
+          valSpan.parentElement.classList.add(
+            "border-emerald-500",
+            "bg-emerald-900/20",
+          );
+
+          scopeStatus.textContent = "Valor asignado.";
+          scopeStatus.className =
+            "text-xs text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded border border-emerald-500/50";
+        }
+
+        await sleep(500);
+        scopeTable.classList.remove("updated");
+      }
+
+      async function startPlay() {
+        if (isPlaying) return;
+        isPlaying = true;
+
+        document.getElementById("start-btn").classList.add("hidden");
+        document.getElementById("reset-btn").classList.remove("hidden");
+        emptyState.style.display = "none";
+        dialogBox.innerHTML = "";
+
+        // FASE 1: COMPILACIÓN
+        phaseBadge.textContent = "Fase 1: Compilación (Lexing/Parsing)";
+        phaseBadge.className =
+          "bg-blue-900/50 border border-blue-500/50 px-4 py-1 rounded-full text-sm font-bold text-blue-300 opacity-100 transition-opacity";
+
+        highlightCode(["var", "a"], "text-blue-400");
+        await addDialog(
+          "engine",
+          "¡Oye Compilador! Acaba de llegar este script. Necesito que lo leas y me prepares las instrucciones.",
+          2000,
+        );
+
+        await addDialog(
+          "compiler",
+          "Entendido, Jefe. Estoy analizando la línea: <code class='bg-slate-900 px-1 rounded'>var a = 2;</code>. Veo una declaración de variable.",
+          2000,
+        );
+
+        setActiveActor("compiler");
+        await sleep(1000);
+        await addDialog(
+          "compiler",
+          "Oye Scope, tengo una declaración para <code class='text-amber-400 font-bold'>a</code>. ¿Ya tienes esta variable registrada en tu colección global?",
+          2500,
+        );
+
+        await addDialog(
+          "scope",
+          "Déjame revisar mi registro... No, no tengo ninguna <code class='text-amber-400 font-bold'>a</code> registrada.",
+          2000,
+        );
+
+        await addDialog(
+          "scope",
+          "¡Listo! Acabo de crearla y reservarle espacio en memoria. Por ahora su valor es <span class='text-slate-400 italic'>undefined</span>.",
+          1000,
+        );
+        await updateScopeMemory("a", "undefined", "declare");
+        await sleep(1500);
+
+        await addDialog(
+          "compiler",
+          "Perfecto. Jefe (Motor), ya ignoré la parte de <code class='text-blue-400'>var a</code> porque el Scope ya se encargó. Te generé el código para ejecutar la asignación (<code class='text-pink-400'>a = 2</code>).",
+          3000,
+        );
+
+        // FASE 2: EJECUCIÓN
+        phaseBadge.textContent = "Fase 2: Ejecución";
+        phaseBadge.className =
+          "bg-pink-900/50 border border-pink-500/50 px-4 py-1 rounded-full text-sm font-bold text-pink-300 opacity-100 transition-opacity";
+
+        highlightCode(["a", "eq", "val"], "text-pink-400");
+        await addDialog(
+          "engine",
+          "Gracias Compilador. Ahora es mi turno de ejecutar las instrucciones.",
+          2000,
+        );
+
+        await addDialog(
+          "engine",
+          "Tengo una instrucción para asignar el valor <code class='text-emerald-400'>2</code>. Oye Scope, necesito hacer una consulta <strong>LHS (Left-Hand Side / Escritura)</strong>. ¿Tienes una variable llamada <code class='text-amber-400 font-bold'>a</code> para que le guarde este dato?",
+          3500,
+        );
+
+        await addDialog(
+          "scope",
+          "Sí, Motor. La creó el Compilador hace un momento. Aquí tienes el acceso a su espacio de memoria. Adelante.",
+          2000,
+        );
+
+        await addDialog(
+          "engine",
+          "¡Excelente! Procedo a guardar el número <code class='text-emerald-400 font-bold'>2</code> en <code class='text-amber-400 font-bold'>a</code>.",
+          1000,
+        );
+        await updateScopeMemory("a", "2", "assign");
+        await sleep(1500);
+
+        // FINAL
+        phaseBadge.textContent = "Ejecución Completada";
+        phaseBadge.className =
+          "bg-emerald-900/50 border border-emerald-500/50 px-4 py-1 rounded-full text-sm font-bold text-emerald-300 opacity-100 transition-opacity";
+        setActiveActor(null);
+        highlightCode(["var", "a", "eq", "val"], "text-slate-200"); // volver a normal
+      }
+
+      function resetPlay() {
+        isPlaying = false;
+        document.getElementById("start-btn").classList.remove("hidden");
+        document.getElementById("reset-btn").classList.add("hidden");
+
+        dialogBox.innerHTML =
+          '<div class="h-full flex items-center justify-center text-slate-500 italic" id="empty-state">Presiona "Ejecutar Obra de Teatro" para comenzar...</div>';
+
+        phaseBadge.style.opacity = "0";
+        setActiveActor(null);
+
+        // Reset code
+        Object.values(codeEls).forEach(
+          (el) =>
+            (el.className = "transition-colors duration-300 text-slate-200"),
+        );
+
+        // Reset scope
+        scopeTable.innerHTML =
+          '<span class="text-slate-600 text-sm italic" id="scope-empty-text">El registro está vacío.</span>';
+        scopeEmptyText = document.getElementById("scope-empty-text");
+        scopeStatus.textContent = "Esperando declaraciones...";
+        scopeStatus.className =
+          "text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded";
+      }
+
+      // Setup inicial color código
+      Object.values(codeEls).forEach(
+        (el) =>
+          (el.className = "transition-colors duration-300 text-slate-200"),
+      );
+    </script>
+  </body>
+</html>

@@ -10,33 +10,31 @@
           {
             "id": "ff847c4ba8b9cd8f",
             "type": "tabs",
-            "dimension": 63.9686684073107,
+            "dimension": 73.4567901234568,
             "children": [
               {
-                "id": "4727d18900686f31",
+                "id": "0e04a1245a2ad709",
                 "type": "leaf",
                 "state": {
-                  "type": "markdown",
+                  "type": "excalidraw",
                   "state": {
-                    "file": "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/1_Get_Started.md",
-                    "mode": "source",
-                    "source": false
+                    "file": "Excalidraw/FLUJO_ZONA_CAMINANTE.md"
                   },
-                  "icon": "lucide-file",
-                  "title": "1_Get_Started"
+                  "icon": "excalidraw-icon",
+                  "title": "FLUJO_ZONA_CAMINANTE"
                 }
               }
             ]
           },
           {
-            "id": "382d8e487175308c",
+            "id": "f6257cbebbdb147e",
             "type": "split",
-            "dimension": 36.0313315926893,
+            "dimension": 26.543209876543212,
             "children": [
               {
                 "id": "1f8231cbebeb7dd1",
                 "type": "tabs",
-                "dimension": 27.548209366391184,
+                "dimension": 48.86363636363637,
                 "children": [
                   {
                     "id": "e4be15876b82af02",
@@ -44,20 +42,21 @@
                     "state": {
                       "type": "outline",
                       "state": {
+                        "file": "Excalidraw/FLUJO_ZONA_CAMINANTE.md",
                         "followCursor": true,
                         "showSearch": false,
                         "searchQuery": ""
                       },
                       "icon": "lucide-list",
-                      "title": "Esquema"
+                      "title": "Esquema de FLUJO_ZONA_CAMINANTE"
                     }
                   }
                 ]
               },
               {
-                "id": "483d8d6b6508961b",
+                "id": "12ef414331910f1f",
                 "type": "tabs",
-                "dimension": 72.45179063360881,
+                "dimension": 51.13636363636363,
                 "children": [
                   {
                     "id": "8bc6da00e3b8df5f",
@@ -107,7 +106,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:informatica",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -132,7 +131,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 214
+    "width": 237,
+    "collapsed": true
   },
   "right": {
     "id": "e2e656614b709629",
@@ -218,58 +218,60 @@
       "daily-notes:Abrir la nota de hoy": false,
       "templates:Insertar plantilla": false,
       "command-palette:Abrir paleta de comandos": false,
-      "bases:Crear nueva base": false
+      "bases:Crear nueva base": false,
+      "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "8bc6da00e3b8df5f",
+  "active": "0e04a1245a2ad709",
   "lastOpenFiles": [
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/1_Get_Started.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/01_Manual_Paso_a_Paso.md",
-    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_1_EL_LENGUAJE.md",
-    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_3_ARTICULOS_ADICIONALES.md",
-    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian/PARTE_2_EL_NAVEGADOR.md",
-    "05_DIARIO/2026/ABRIL/JUEVES_9_ABRIL.md",
-    "es/docs/Web/JavaScript/Reference/Statements/switch.md",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/4_Types_Grammar.md",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/2_Scope_Closures.md",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/6_ES_Next_Beyond.md",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/5_Sync_Async.md",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/3_Objects_Classes.md",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/scope-closures_fig5.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/scope-closures_fig4.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/scope-closures_fig3.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/scope-closures_fig2.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/scope-closures_fig1.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/get-started_fig6.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/get-started_fig5.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/get-started_fig4.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/get-started_fig3.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets/get-started_fig2.png",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian/assets",
-    "07_RECURSOS/INFORMATICA/YDKJS_Obsidian",
-    "07_RECURSOS/INFORMATICA/Apuntes_Obsidian",
-    "07_RECURSOS/INFORMATICA/JS_INFO_PARA_NOTEBOOK/PARTE_1_EL_LENGUAJE.md",
-    "07_RECURSOS/INFORMATICA/JS_INFO_PARA_NOTEBOOK/PARTE_3_TEMAS_AVANZADOS.md",
-    "07_RECURSOS/INFORMATICA/JS_INFO_PARA_NOTEBOOK/PARTE_2_EL_NAVEGADOR.md",
-    "07_RECURSOS/INFORMATICA/JS_INFO_PARA_NOTEBOOK",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/06_Adicional_javascript_technologies_overview.md",
-    "07_RECURSOS/INFORMATICA/JS_INFO_PARA_NOTEBOOK/PARTE_3_ARTICULOS_ADICIONALES.md",
-    "es/docs/Web/JavaScript/Reference/Global_Objects/Intl.md",
-    "es/docs/Web/JavaScript/Reference/Global_Objects",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/03_Referencia_Operadores.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/02_Diccionario_Objetos_Globales.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/06_Adicional_errors.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/06_Adicional_deprecated_and_obsolete_features.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/06_Adicional_iteration_protocols.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/06_Adicional_regular_expressions.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/06_Adicional_strict_mode.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM/06_Adicional_lexical_grammar.md",
-    "07_RECURSOS/INFORMATICA/JS_NOTEBOOK_LM",
-    "es/docs/Web/JavaScript/Reference/Statements",
-    "es/docs/Web/JavaScript/Reference",
-    "es/docs/Web/JavaScript",
-    "es/docs/Web",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/Sin título.canvas",
-    "Sin título.canvas"
+    "08_TODO_SE_PERDIO/TODO_SE_PERDIO....md",
+    "08_TODO_SE_PERDIO/FLUJO_ZONA_DEL_CAMINANTE.canvas",
+    "Excalidraw/FLUJO_ZONA_CAMINANTE.md",
+    "Excalidraw/UML-ER-library.excalidrawlib",
+    "Excalidraw/system-design-template.excalidrawlib",
+    "Excalidraw/stick-figures.excalidrawlib",
+    "Excalidraw/some-handdrawn-signs.excalidrawlib",
+    "Excalidraw/some-common-cloud-apps.excalidrawlib",
+    "Excalidraw/robots.excalidrawlib",
+    "Excalidraw/icons.excalidrawlib",
+    "Excalidraw/forms.excalidrawlib",
+    "Excalidraw/decision-flow-control.excalidrawlib",
+    "Excalidraw/libraries/icons.excalidrawlib",
+    "02_TRABAJOS_NEGOCIOS/INIT_1.md",
+    "Pasted image 20260429120149.png",
+    "06_NOTAS_IDEAS_RAPIDAS/hoy 21-04-26.md",
+    "02_TRABAJOS_NEGOCIOS/Sin título.canvas",
+    "02_TRABAJOS_NEGOCIOS/MINI_IMPRENTA/INICIO_IMPRENTA.md",
+    "Sin título.canvas",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/TEMARIO_NOTEBOOKLM_JS.md",
+    "02_TRABAJOS_NEGOCIOS/OUTLINER_MUERTE_TRIADA/OUTLINER_MUERTE_TRIADA_PRUEBA_FINAL.md",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/CONTENIDO_VIRAL_IA/ESTRATEGIA_1.md",
+    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260429112026.png",
+    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/ARCO_TRIADA.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/LENGUAJE_JAVASCRIPT.md",
+    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/AUDITORIA_DIA_27-04-26.md",
+    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/VIDEOS_YOUTUBE/COMO_SER_TAN_PRODUCTIVO_QUE_PAREZCA_ILEGAL.md",
+    "07_RECURSOS/DIARIO/Pasted image 20260427220511.png",
+    "07_RECURSOS/DIARIO/Pasted image 20260427220418.png",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/TALLER_ING_ALFREDO_HUAMAN/TALLER_3.md",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/TALLER_ING_ALFREDO_HUAMAN/TALLER_2.md",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/TALLER_ING_ALFREDO_HUAMAN/TALLER_1.md",
+    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421224535.png",
+    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421223512.png",
+    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421222421.png",
+    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421221518.png",
+    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421214408.png",
+    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421214318.png",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/FASE_0_JAVASCRIPT.md",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/PRIMEROS_PASOS_RUTA_GENERAL.md",
+    "README.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/PREGUNTAS.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/TEMARIO_DE_ELOQUENT_JAVASCRIPT_4TH.md",
+    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/VIDEOS_YOUTUBE/COMO_DESARROLLAR_UN_FOCO_TAN_POTENTE.md",
+    "Sin título.md",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/HOTMART.md",
+    "00SISTEMA_DE_ZONA/PLUGINS_USADOS.md",
+    "2026-04-14.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/Sin título.canvas"
   ]
 }

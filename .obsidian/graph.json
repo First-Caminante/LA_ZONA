@@ -1,11 +1,11 @@
 {
-  "collapse-filter": true,
-  "search": "-path:07_RECURSOS -file:README.md",
+  "collapse-filter": false,
+  "search": "-path:07_RECURSOS -file:README.md -path:00SISTEMA_DE_ZONA  -path:05_DIARIO  ",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
   "showOrphans": true,
-  "collapse-color-groups": true,
+  "collapse-color-groups": false,
   "colorGroups": [
     {
       "query": "path:01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN  ",
@@ -18,7 +18,7 @@
       "query": "path:00SISTEMA_DE_ZONA/TEMPLATES  ",
       "color": {
         "a": 1,
-        "rgb": 0
+        "rgb": 16777215
       }
     },
     {
@@ -48,6 +48,13 @@
         "a": 1,
         "rgb": 327424
       }
+    },
+    {
+      "query": "file:ARCO_TRIADA ",
+      "color": {
+        "a": 1,
+        "rgb": 5395168
+      }
     }
   ],
   "collapse-display": true,
@@ -60,6 +67,6 @@
   "repelStrength": 10.5550130208333,
   "linkStrength": 0.902750651041667,
   "linkDistance": 153,
-  "scale": 0.3003387451171875,
+  "scale": 0.200225830078125,
   "close": true
 }

@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cómo Funciona JavaScript bajo el Capó</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0f172a; /* slate-900 */
+        color: #f8fafc; /* slate-50 */
+      }
+
+      .font-mono {
+        font-family: "Fira Code", monospace;
+      }
+
+      /* Animaciones personalizadas */
+      .fade-in {
+        animation: fadeIn 0.5s ease-in-out forwards;
+      }
+
+      .pop-in {
+        animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes popIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Estilos para el árbol AST */
+      .ast-node {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.5rem;
+        border-left: 2px solid #334155;
+      }
+      .ast-node::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.75rem;
+        width: 1rem;
+        height: 2px;
+        background-color: #334155;
+      }
+
+      /* Puntero de escaneo */
+      .scanner-pointer {
+        border-bottom: 3px solid #10b981; /* emerald-500 */
+        background-color: rgba(16, 185, 129, 0.2);
+        transition: all 0.2s ease;
+      }
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col items-center py-10 px-4 md:px-8">
+    <header class="max-w-5xl w-full text-center mb-10 fade-in">
+      <h1
+        class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 mb-4"
+      >
+        El Viaje de tu Código JavaScript
+      </h1>
+      <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+        Una simulación visual de cómo el motor (como V8) transforma texto plano
+        en instrucciones de máquina a través de 3 fases críticas.
+      </p>
+    </header>
+
+    <main class="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Panel Izquierdo: Control y Código -->
+      <div
+        class="lg:col-span-1 space-y-6 fade-in"
+        style="animation-delay: 0.1s"
+      >
+        <!-- Editor de Código -->
+        <div
+          class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden"
+        >
+          <div
+            class="bg-slate-900 px-4 py-2 border-b border-slate-700 flex items-center gap-2"
+          >
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            <span class="text-xs text-slate-400 ml-2 font-mono">app.js</span>
+          </div>
+          <div class="p-6 font-mono text-lg" id="code-display">
+            <span id="char-0">v</span><span id="char-1">a</span
+            ><span id="char-2">r</span><span id="char-3"> </span
+            ><span id="char-4">a</span><span id="char-5"> </span
+            ><span id="char-6">=</span><span id="char-7"> </span
+            ><span id="char-8">2</span><span id="char-9">;</span>
+          </div>
+        </div>
+
+        <!-- Controles de Simulación -->
+        <div
+          class="bg-slate-800 rounded-xl border border-slate-700 p-6 shadow-xl"
+        >
+          <h3 class="text-xl font-semibold mb-4 text-slate-200">
+            Panel de Control
+          </h3>
+          <div class="space-y-3 relative">
+            <!-- Linea conectora visual -->
+            <div
+              class="absolute left-4 top-4 bottom-4 w-0.5 bg-slate-700 z-0"
+            ></div>
+
+            <button
+              onclick="startPhase1()"
+              id="btn-phase1"
+              class="relative z-10 w-full flex items-center gap-4 bg-slate-900 hover:bg-emerald-900/40 border border-slate-600 hover:border-emerald-500 rounded-lg p-3 transition-colors text-left group"
+            >
+              <div
+                class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/50 group-hover:scale-110 transition-transform"
+              >
+                1
+              </div>
+              <div>
+                <div class="font-semibold text-emerald-400">
+                  Lexing (Escáner)
+                </div>
+                <div class="text-xs text-slate-400">Generar Tokens</div>
+              </div>
+            </button>
+
+            <button
+              onclick="startPhase2()"
+              id="btn-phase2"
+              class="relative z-10 w-full flex items-center gap-4 bg-slate-900 hover:bg-blue-900/40 border border-slate-600 hover:border-blue-500 rounded-lg p-3 transition-colors text-left opacity-50 cursor-not-allowed group"
+              disabled
+            >
+              <div
+                class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold border border-blue-500/50 group-hover:scale-110 transition-transform"
+              >
+                2
+              </div>
+              <div>
+                <div class="font-semibold text-blue-400">Parsing (Árbol)</div>
+                <div class="text-xs text-slate-400">Construir AST</div>
+              </div>
+            </button>
+
+            <button
+              onclick="startPhase3()"
+              id="btn-phase3"
+              class="relative z-10 w-full flex items-center gap-4 bg-slate-900 hover:bg-purple-900/40 border border-slate-600 hover:border-purple-500 rounded-lg p-3 transition-colors text-left opacity-50 cursor-not-allowed group"
+              disabled
+            >
+              <div
+                class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold border border-purple-500/50 group-hover:scale-110 transition-transform"
+              >
+                3
+              </div>
+              <div>
+                <div class="font-semibold text-purple-400">Gen. de Código</div>
+                <div class="text-xs text-slate-400">Bytecode & Scope</div>
+              </div>
+            </button>
+
+            <button
+              onclick="resetAll()"
+              class="w-full mt-4 bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 rounded-lg text-sm font-semibold transition-colors"
+            >
+              Reiniciar Simulación
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Derecho: Visualización Principal -->
+      <div
+        class="lg:col-span-2 bg-slate-800/50 rounded-xl border border-slate-700 shadow-2xl relative overflow-hidden flex flex-col min-h-[500px] fade-in"
+        style="animation-delay: 0.2s"
+      >
+        <!-- Vista Inicial (Vacia) -->
+        <div
+          id="view-intro"
+          class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-opacity duration-500"
+        >
+          <svg
+            class="w-20 h-20 text-slate-600 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            ></path>
+          </svg>
+          <h2 class="text-2xl font-bold text-slate-300 mb-2">
+            Motor en Espera
+          </h2>
+          <p class="text-slate-500">
+            Haz clic en "Lexing (Escáner)" para iniciar el proceso de
+            compilación JIT.
+          </p>
+        </div>
+
+        <!-- FASE 1: Lexing -->
+        <div
+          id="view-phase1"
+          class="hidden absolute inset-0 flex flex-col p-6 overflow-y-auto bg-slate-900/90 z-10"
+        >
+          <div class="mb-4 pb-4 border-b border-slate-700">
+            <h2
+              class="text-2xl font-bold text-emerald-400 flex items-center gap-2"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+              Lexing (El Escáner)
+            </h2>
+            <p class="text-sm text-slate-400 mt-2">
+              Imagina un puntero que lee tu archivo .js caracter por caracter.
+              Cuando identifica un patrón válido, lo empaqueta en un objeto
+              llamado "Token" y lo empuja a una Matriz (Array). Los espacios en
+              blanco se descartan.
+            </p>
+          </div>
+
+          <div class="flex-1">
+            <h4 class="text-sm font-semibold text-slate-500 mb-3">
+              Matriz de Tokens Generada:
+            </h4>
+            <div id="token-array" class="space-y-3 font-mono text-sm">
+              <!-- Tokens se inyectarán aquí -->
+            </div>
+          </div>
+        </div>
+
+        <!-- FASE 2: Parsing -->
+        <div
+          id="view-phase2"
+          class="hidden absolute inset-0 flex flex-col p-6 overflow-y-auto bg-slate-900/90 z-20"
+        >
+          <div class="mb-4 pb-4 border-b border-slate-700">
+            <h2
+              class="text-2xl font-bold text-blue-400 flex items-center gap-2"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                ></path>
+              </svg>
+              Parsing (El Constructor del Árbol)
+            </h2>
+            <p class="text-sm text-slate-400 mt-2">
+              El motor toma el Array de Tokens y los anida basándose en las
+              reglas de ECMA-262. El resultado es el
+              <strong>AST (Abstract Syntax Tree)</strong>.
+            </p>
+
+            <!-- Info Box de Error (Simulado) -->
+            <div
+              class="mt-3 bg-red-900/20 border border-red-500/30 rounded p-3 flex gap-3 items-start"
+            >
+              <svg
+                class="w-5 h-5 text-red-400 shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                ></path>
+              </svg>
+              <p class="text-xs text-red-200">
+                <strong>Nota ASI:</strong> Si faltara un punto y coma y el
+                Automatic Semicolon Insertion (ASI) fallara, el constructor se
+                rompería aquí lanzando un
+                <code class="bg-red-950 px-1 rounded text-red-400"
+                  >SyntaxError</code
+                >.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-x-auto">
+            <h4 class="text-sm font-semibold text-slate-500 mb-3">
+              Abstract Syntax Tree (AST):
+            </h4>
+            <div
+              id="ast-container"
+              class="font-mono text-sm bg-slate-950 p-4 rounded-lg border border-slate-800 inline-block min-w-full"
+            >
+              <!-- AST se inyectará aquí -->
+            </div>
+          </div>
+        </div>
+
+        <!-- FASE 3: Generación de Código -->
+        <div
+          id="view-phase3"
+          class="hidden absolute inset-0 flex flex-col p-6 overflow-y-auto bg-slate-900/90 z-30"
+        >
+          <div class="mb-4 pb-4 border-b border-slate-700">
+            <h2
+              class="text-2xl font-bold text-purple-400 flex items-center gap-2"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+              Gen. de Código (Ignition)
+            </h2>
+            <p class="text-sm text-slate-400 mt-2">
+              El intérprete (Ignition) recorre el árbol y genera el
+              <strong>Bytecode</strong>. Aquí el motor y el
+              <strong>Scope</strong> negocian la memoria mediante consultas LHS
+              (asignar) y RHS (recuperar).
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+            <!-- Bytecode -->
+            <div
+              class="bg-slate-950 rounded-lg border border-slate-800 p-4 flex flex-col"
+            >
+              <h4
+                class="text-sm font-semibold text-purple-400 mb-3 border-b border-slate-800 pb-2"
+              >
+                Bytecode Generado
+              </h4>
+              <ul
+                id="bytecode-list"
+                class="space-y-2 font-mono text-sm text-slate-300 flex-1"
+              >
+                <!-- Bytecode inyectado -->
+              </ul>
+            </div>
+
+            <!-- Scope / Memoria -->
+            <div
+              class="bg-slate-950 rounded-lg border border-slate-800 p-4 flex flex-col"
+            >
+              <h4
+                class="text-sm font-semibold text-amber-400 mb-3 border-b border-slate-800 pb-2"
+              >
+                Negociación de Scope
+              </h4>
+
+              <div
+                id="scope-content"
+                class="space-y-4 opacity-0 transition-opacity duration-500"
+              >
+                <div class="bg-slate-900 rounded border border-slate-700 p-2">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-bold text-slate-400"
+                      >Consulta de Motor:</span
+                    >
+                    <span
+                      class="text-xs bg-blue-900/50 text-blue-300 px-2 py-0.5 rounded"
+                      >LHS (Escritura)</span
+                    >
+                  </div>
+                  <p class="text-xs text-slate-300 font-mono">
+                    "Scope, ¿tienes una variable '<span class="text-emerald-400"
+                      >a</span
+                    >' para que le asigne un valor?"
+                  </p>
+                </div>
+
+                <div class="bg-slate-900 rounded border border-slate-700 p-2">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-bold text-slate-400"
+                      >Respuesta de Scope:</span
+                    >
+                  </div>
+                  <p class="text-xs text-slate-300 font-mono">
+                    "Sí, la acabo de crear en la memoria. Adelante, asígnale el
+                    <span class="text-amber-400">2</span>."
+                  </p>
+                </div>
+
+                <table class="w-full text-left text-xs mt-4">
+                  <thead class="bg-slate-800 text-slate-400">
+                    <tr>
+                      <th class="p-2 rounded-tl">Variable</th>
+                      <th class="p-2">Memoria</th>
+                      <th class="p-2 rounded-tr">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-slate-800">
+                      <td class="p-2 font-mono text-emerald-400">a</td>
+                      <td class="p-2 text-slate-500">0x00A1F...</td>
+                      <td class="p-2 font-mono text-amber-400">2</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Datos de la simulación
+      const codeChars = ["v", "a", "r", " ", "a", " ", "=", " ", "2", ";"];
+      const tokens = [
+        { type: "Keyword", value: "var", color: "text-pink-400" },
+        { type: "Identifier", value: "a", color: "text-emerald-400" },
+        { type: "Punctuator", value: "=", color: "text-slate-400" },
+        { type: "Numeric", value: "2", color: "text-amber-400" },
+        { type: "Punctuator", value: ";", color: "text-slate-400" },
+      ];
+
+      const astNodes = [
+        {
+          label: "Program",
+          children: [
+            {
+              label: 'VariableDeclaration (kind: "var")',
+              children: [
+                {
+                  label: "VariableDeclarator",
+                  children: [
+                    { label: 'id: Identifier (name: "a")' },
+                    { label: "init: Literal (value: 2)" },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      const bytecodes = [
+        { code: "LdaSmi [2]", desc: "Carga el número 2 en el acumulador" },
+        { code: "Star r0", desc: "Almacena en el registro r0" },
+        {
+          code: "StaGlobal [0]",
+          desc: 'Asigna a la variable "a" (LHS Lookup)',
+        },
+      ];
+
+      // Utilidades de UI
+      const hideObj = (id) =>
+        document.getElementById(id).classList.add("hidden");
+      const showObj = (id) => {
+        const el = document.getElementById(id);
+        el.classList.remove("hidden");
+        el.style.opacity = "0";
+        setTimeout(() => (el.style.opacity = "1"), 50);
+      };
+      const enableBtn = (id) => {
+        const btn = document.getElementById(id);
+        btn.classList.remove("opacity-50", "cursor-not-allowed");
+        btn.removeAttribute("disabled");
+      };
+      const disableBtn = (id) => {
+        const btn = document.getElementById(id);
+        btn.classList.add("opacity-50", "cursor-not-allowed");
+        btn.setAttribute("disabled", "true");
+      };
+
+      const resetCodeHighlight = () => {
+        for (let i = 0; i < 10; i++) {
+          const char = document.getElementById(`char-${i}`);
+          char.className = "";
+        }
+      };
+
+      // Fase 1: Lexing
+      async function startPhase1() {
+        // Setup UI
+        hideObj("view-intro");
+        hideObj("view-phase2");
+        hideObj("view-phase3");
+        showObj("view-phase1");
+        document.getElementById("token-array").innerHTML = "";
+        resetCodeHighlight();
+
+        // Deshabilitar otros botones temporalmente
+        disableBtn("btn-phase2");
+        disableBtn("btn-phase3");
+
+        // Simular el puntero caracter por caracter
+        let tokenIndex = 0;
+        const tokenMapping = [
+          [0, 1, 2], // var
+          [4], // a
+          [6], // =
+          [8], // 2
+          [9], // ;
+        ];
+
+        for (let i = 0; i < codeChars.length; i++) {
+          const charSpan = document.getElementById(`char-${i}`);
+
+          // Efecto escáner
+          charSpan.classList.add("scanner-pointer");
+
+          await new Promise((r) => setTimeout(r, 150)); // Pausa de escaneo
+
+          // ¿Es el final de un token valido?
+          const isEndOfToken = tokenMapping.findIndex(
+            (arr) => arr.includes(i) && arr[arr.length - 1] === i,
+          );
+
+          if (isEndOfToken !== -1) {
+            // Empaquetar el Token visualmente
+            const t = tokens[isEndOfToken];
+            const tokenHtml = `
+                        <div class="pop-in bg-slate-800 rounded px-4 py-2 flex justify-between items-center border border-slate-700">
+                            <span class="text-slate-400">{ type: '<span class="text-emerald-300">${t.type}</span>', value: '<span class="${t.color}">${t.value}</span>' }</span>
+                            <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">Empujado al Array</span>
+                        </div>
+                    `;
+            document
+              .getElementById("token-array")
+              .insertAdjacentHTML("beforeend", tokenHtml);
+          }
+
+          // Espacios en blanco se descartan silenciosamente (solo quitamos color)
+          charSpan.classList.remove("scanner-pointer");
+          if (codeChars[i] !== " ") {
+            charSpan.classList.add("text-slate-500"); // ya procesado
+          }
+        }
+
+        // Habilitar siguiente fase
+        enableBtn("btn-phase2");
+      }
+
+      // Fase 2: Parsing (AST)
+      function startPhase2() {
+        hideObj("view-phase1");
+        hideObj("view-phase3");
+        showObj("view-phase2");
+        disableBtn("btn-phase3");
+
+        const container = document.getElementById("ast-container");
+        container.innerHTML = "";
+
+        // Construir arbol recursivamente con delays
+        let delayCounter = 0;
+
+        function buildHtmlTree(node, isRoot = false) {
+          const div = document.createElement("div");
+          div.className = isRoot
+            ? "font-bold text-blue-400 pop-in"
+            : "ast-node text-slate-300 pop-in";
+          div.style.animationDelay = `${delayCounter * 0.2}s`;
+          div.innerHTML = `<span>${node.label}</span>`;
+          delayCounter++;
+
+          if (node.children) {
+            const childrenContainer = document.createElement("div");
+            childrenContainer.className = isRoot ? "pl-4 mt-2" : "";
+            node.children.forEach((child) => {
+              childrenContainer.appendChild(buildHtmlTree(child));
+            });
+            div.appendChild(childrenContainer);
+          }
+          return div;
+        }
+
+        container.appendChild(buildHtmlTree(astNodes[0], true));
+
+        // Habilitar siguiente fase después de la animación
+        setTimeout(
+          () => {
+            enableBtn("btn-phase3");
+          },
+          delayCounter * 200 + 500,
+        );
+      }
+
+      // Fase 3: Code Generation & Scope
+      function startPhase3() {
+        hideObj("view-phase2");
+        showObj("view-phase3");
+
+        const list = document.getElementById("bytecode-list");
+        list.innerHTML = "";
+
+        // Animacion de Bytecode
+        bytecodes.forEach((bc, idx) => {
+          setTimeout(() => {
+            const li = document.createElement("li");
+            li.className =
+              "pop-in flex justify-between border-b border-slate-800 pb-1";
+            li.innerHTML = `
+                        <span class="text-purple-300">${bc.code}</span>
+                        <span class="text-xs text-slate-500 hidden sm:inline">${bc.desc}</span>
+                    `;
+            list.appendChild(li);
+
+            // Si es el ultimo, mostrar el scope
+            if (idx === bytecodes.length - 1) {
+              setTimeout(() => {
+                document.getElementById("scope-content").style.opacity = "1";
+              }, 500);
+            }
+          }, idx * 600);
+        });
+      }
+
+      function resetAll() {
+        hideObj("view-phase1");
+        hideObj("view-phase2");
+        hideObj("view-phase3");
+        showObj("view-intro");
+
+        resetCodeHighlight();
+        disableBtn("btn-phase2");
+        disableBtn("btn-phase3");
+        document.getElementById("scope-content").style.opacity = "0";
+      }
+    </script>
+  </body>
+</html>

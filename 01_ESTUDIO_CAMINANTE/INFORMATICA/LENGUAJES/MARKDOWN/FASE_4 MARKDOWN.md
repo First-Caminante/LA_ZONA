@@ -27,6 +27,8 @@ levels:
 - 1.- INSERCION DE CODIGO INLINE, BLOQUES
 - 2.-TABLAS
 - 3.- ESCAPE DE CARACTERES
+    - GLOSARIO
+- columna
 ```
 
 ---
@@ -65,7 +67,7 @@ num = 5
 ## 2.-TABLAS
 Para crear tablas requieres logica y presicion visual para que markdown lo haga de forma responsiva si respetas sus delimitadores
 
-* Para construirlas necesitamos separar las columnas con un delimitador barra larga | 
+* Para construirlas necesitamos separar las columnas [[#columna]] con un delimitador barra larga | 
 * la primera linea de la tabla siempre sera el encabezado asi que debes colocar una linea separadora por guiones para la primera fila
 
 | hola | nop |
@@ -104,3 +106,15 @@ EL ESCAPE DE CARACTERES COMO EN TODO LENGUAJE DE PROGRAMACION ES USANDO UNA BARR
 + \#
 + \`
 + \\
+
+
+---
+
+##### GLOSARIO
+
+## columna
+
+Es el vertical de una matriz o tabla
+fdsaf
+asdf
+asdf

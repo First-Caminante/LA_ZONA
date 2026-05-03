@@ -1,0 +1,52 @@
+---
+Area:
+tema:
+tags:
+  - "#informatica"
+  - "#programacion"
+fecha: 2026-04-21
+libro:
+---
+TECNICAS DE VENTA
+
+![[Pasted image 20260421214318.png]]
+
+ENTENDER EMBUDO DE VENTAS EL MODELO AIDA:
+
+![[Pasted image 20260421214408.png]]
+
+ESCACES -> INDIRECTAMENTE DICE SI NO LO COMPRAS AHORA YA SE ACABO PROBABLEMENTE...
+
+GATILLOS MENTALES -> LA SEÑAL GENERAL QUE TODO HUMANO PUEDE TENER...
+
+>[!TIP] TIP
+>TIENES QUE LEER A ESTA PERSONA 
+>DEBES LEER INFLUENCIA DE ROBERT CIALDINI...
+
+
+como vender
+
+vender
+
+### TRAFICO ORGANICO 
+SIN PAGAR PUBLICIDAD
+
+ATENCION -> INTERES -> DESEO -> ACCION...
+  A           B          C         D
+  
+![[Pasted image 20260421221518.png]]
+
+### VENTA DIRECTA USANDO PUBLICIDAD DE PAGA
+
+DEBES SABER HACER PUBLICIDAD BUENA EN FACE O TIKTOK 
+
+![[Pasted image 20260421222421.png]]
+
+
+### venta indirecta
+
+que es tocar dolores??
+
+![[Pasted image 20260421223512.png]]
+![[Pasted image 20260421224535.png]]
+

@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌙 JS por dentro · Flujo animado (modo oscuro)</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      body {
+        background: #0b0f17;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Segoe UI", "Roboto", system-ui, sans-serif;
+        padding: 20px;
+        margin: 0;
+      }
+
+      .card {
+        max-width: 1300px;
+        width: 100%;
+        background: rgba(18, 25, 40, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 42px;
+        box-shadow:
+          0 25px 45px rgba(0, 0, 0, 0.7),
+          0 0 0 1px rgba(70, 130, 200, 0.15);
+        padding: 28px 24px 32px;
+        border: 1px solid #2a3a58;
+      }
+
+      h1 {
+        font-weight: 600;
+        font-size: 2.2rem;
+        letter-spacing: -0.01em;
+        color: #e3ecff;
+        margin: 0 0 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      h1 span {
+        background: #1e3a6f;
+        color: #bdd3ff;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 6px 18px;
+        border-radius: 40px;
+        box-shadow:
+          inset 0 1px 3px #3f6ab3,
+          0 6px 12px #00000030;
+        border: 1px solid #3f6290;
+      }
+
+      .subtitle {
+        color: #b0c6e9;
+        font-weight: 400;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        border-left: 5px solid #3a9bdc;
+        padding-left: 20px;
+        background: linear-gradient(90deg, #1a325580 0%, transparent 90%);
+        border-radius: 0 8px 8px 0;
+      }
+
+      .canvas-wrapper {
+        position: relative;
+        margin: 8px 0 8px;
+        border-radius: 28px;
+        background: #0e1628;
+        box-shadow:
+          inset 0 2px 6px #00000060,
+          0 10px 20px #00000050;
+        padding: 12px;
+        border: 1px solid #2e4460;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 20px;
+        background: #0b121f;
+        box-shadow: 0 0 0 1px #2a3f60;
+        cursor: default;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px 32px;
+        margin-top: 20px;
+        padding: 16px 22px;
+        background: #111b2bcc;
+        border-radius: 36px;
+        backdrop-filter: blur(4px);
+        border: 1px solid #2c405e;
+        align-items: center;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 12px;
+      }
+
+      .btn {
+        background: #1f324b;
+        border: 1px solid #3f6290;
+        color: #d6e5ff;
+        padding: 8px 20px;
+        border-radius: 40px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        box-shadow: 0 4px 6px #00000030;
+      }
+
+      .btn:hover {
+        background: #2b4668;
+        border-color: #5f8bc9;
+        color: white;
+        box-shadow: 0 6px 12px #00000050;
+      }
+
+      .btn.play {
+        background: #1e5a8b;
+        border-color: #6db3f2;
+        color: white;
+      }
+
+      .legend-panel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px 30px;
+        margin-left: auto;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #c6d6f0;
+        font-size: 0.9rem;
+      }
+
+      .color-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 6px 2px 10px 2px;
+        background: var(--bg);
+        box-shadow: 0 2px 6px black;
+        border: 1px solid #6f8fbb;
+      }
+
+      .footnote {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        color: #9bb1d1;
+        font-size: 0.9rem;
+      }
+
+      .badge {
+        background: #152433;
+        color: #b4ceff;
+        padding: 6px 18px;
+        border-radius: 40px;
+        font-weight: 500;
+        border: 1px solid #375a7e;
+      }
+
+      .status-text {
+        color: #8cb3ff;
+        font-weight: 500;
+        background: #0f1a2b;
+        padding: 6px 18px;
+        border-radius: 30px;
+        border: 1px solid #2f5a8c;
+      }
+
+      @media (max-width: 800px) {
+        .controls {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .legend-panel {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>
+        ⚡ JavaScript · Flujo interno animado
+        <span>ECMA-262 · YDKJS</span>
+      </h1>
+      <div class="subtitle">
+        Tokenizing → AST → Código · Motor / Compilador / Scope · LHS vs RHS
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="animatedCanvas" width="1200" height="780"></canvas>
+      </div>
+
+      <!-- Controles y leyenda -->
+      <div class="controls">
+        <div class="btn-group">
+          <button class="btn play" id="playPauseBtn">⏸️ Pausa</button>
+          <button class="btn" id="resetBtn">🔄 Reiniciar</button>
+          <button class="btn" id="stepBtn">⏩ Paso a paso</button>
+        </div>
+        <div class="status-text" id="phaseDisplay">
+          🔹 Fase: Compilación (Tokenizing)
+        </div>
+        <div class="legend-panel">
+          <div class="legend-item">
+            <div class="color-dot" style="--bg: #3f8cff"></div>
+            Compilación
+          </div>
+          <div class="legend-item">
+            <div class="color-dot" style="--bg: #ff8a4c"></div>
+            Motor
+          </div>
+          <div class="legend-item">
+            <div class="color-dot" style="--bg: #4caf7f"></div>
+            Compilador
+          </div>
+          <div class="legend-item">
+            <div class="color-dot" style="--bg: #b380cf"></div>
+            Scope
+          </div>
+          <div class="legend-item">
+            <div class="color-dot" style="--bg: #f25c5c"></div>
+            LHS / RHS
+          </div>
+        </div>
+      </div>
+      <div class="footnote">
+        <div>
+          🧩 <strong>ECMA-262</strong> — Compilación antes de ejecución ·
+          Hoisting natural
+        </div>
+        <div class="badge">⚙️ 'use strict' evita fugas globales</div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        const canvas = document.getElementById("animatedCanvas");
+        const ctx = canvas.getContext("2d");
+        const phaseDisplay = document.getElementById("phaseDisplay");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+
+        const W = 1200,
+          H = 780;
+        canvas.width = W;
+        canvas.height = H;
+
+        // Tema oscuro profesional
+        const colors = {
+          bg: "#0b121f",
+          panel: "#101a2b",
+          border: "#2c405e",
+          textBright: "#e3ecff",
+          textSoft: "#b0c6e9",
+          accent: "#3f8cff",
+          engine: "#ff8a4c",
+          compiler: "#4caf7f",
+          scope: "#b380cf",
+          lhs: "#f25c5c",
+          rhs: "#e5b13b",
+          arrow: "#6f9fdf",
+          glow: "#3f8cff40",
+        };
+
+        // Estados de la animación (flujo completo)
+        const PHASES = {
+          COMPILE_TOKEN: 0,
+          COMPILE_PARSE: 1,
+          COMPILE_GEN: 2,
+          ACTORS_INTRO: 3,
+          ACTORS_INTERACT: 4,
+          VAR_DECLARE: 5, // fase compilación var a
+          VAR_ASSIGN: 6, // fase ejecución a=2
+          LHS_RHS: 7,
+          SUMMARY: 8,
+        };
+
+        let currentPhase = PHASES.COMPILE_TOKEN;
+        let phaseProgress = 0; // 0..1 dentro de la fase
+        let animationEnabled = true;
+        let animFrame = null;
+        let lastTimestamp = 0;
+        const PHASE_DURATION = 180; // frames aprox por fase (ajustable)
+
+        // Para paso manual
+        let manualStep = false;
+
+        // ----- Utilidades dibujo (modo oscuro) -----
+        function roundedRect(x, y, w, h, r, fill, stroke, lw = 1.8) {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          ctx.lineTo(x + r, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+          ctx.closePath();
+          if (fill) {
+            ctx.fillStyle = fill;
+            ctx.fill();
+          }
+          if (stroke) {
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = lw;
+            ctx.stroke();
+          }
+        }
+
+        function drawGlowBox(x, y, w, h, color, radius = 14, glow = false) {
+          if (glow) {
+            ctx.shadowColor = color + "80";
+            ctx.shadowBlur = 18;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 2;
+          }
+          roundedRect(x, y, w, h, radius, colors.panel, color);
+          ctx.shadowColor = "transparent";
+          if (!glow) roundedRect(x, y, w, h, radius, null, color, 2);
+        }
+
+        function drawArrow(
+          fromX,
+          fromY,
+          toX,
+          toY,
+          color,
+          width = 2.5,
+          dashed = false,
+          progress = 1.0,
+        ) {
+          if (progress <= 0) return;
+          const endX = fromX + (toX - fromX) * progress;
+          const endY = fromY + (toY - fromY) * progress;
+
+          ctx.beginPath();
+          ctx.moveTo(fromX, fromY);
+          ctx.lineTo(endX, endY);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = width;
+          if (dashed) ctx.setLineDash([7, 6]);
+          else ctx.setLineDash([]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          if (progress > 0.98) {
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            const arrowX = toX - 8 * Math.cos(angle);
+            const arrowY = toY - 8 * Math.sin(angle);
+            ctx.beginPath();
+            ctx.moveTo(arrowX, arrowY);
+            ctx.lineTo(
+              arrowX - 12 * Math.cos(angle - 0.8),
+              arrowY - 12 * Math.sin(angle - 0.8),
+            );
+            ctx.lineTo(
+              arrowX - 12 * Math.cos(angle + 0.8),
+              arrowY - 12 * Math.sin(angle + 0.8),
+            );
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+          }
+        }
+
+        function drawTitle(text, x, y, size = 22, col = colors.textBright) {
+          ctx.font = `600 ${size}px 'Segoe UI', 'Roboto', sans-serif`;
+          ctx.fillStyle = col;
+          ctx.fillText(text, x, y);
+        }
+        function drawText(
+          text,
+          x,
+          y,
+          size = 14,
+          col = colors.textSoft,
+          weight = "400",
+        ) {
+          ctx.font = `${weight} ${size}px 'Segoe UI', sans-serif`;
+          ctx.fillStyle = col;
+          ctx.fillText(text, x, y);
+        }
+
+        // Dibuja todo según fase y progreso
+        function drawScene(phase, prog) {
+          ctx.clearRect(0, 0, W, H);
+          ctx.fillStyle = colors.bg;
+          ctx.fillRect(0, 0, W, H);
+
+          // Fondos de sección
+          drawGlowBox(30, 90, 1140, 100, colors.border, 18);
+          drawGlowBox(30, 230, 1140, 150, colors.border, 20);
+          drawGlowBox(30, 420, 1140, 130, colors.border, 18);
+          drawGlowBox(30, 580, 1140, 140, colors.border, 20);
+
+          // ------- SECCIÓN 1: COMPILACIÓN (token/parse/gen) -------
+          const compY = 110;
+          drawTitle(
+            "① Fase de compilación (ECMA-262)",
+            60,
+            compY - 10,
+            20,
+            "#bdd3ff",
+          );
+
+          const tokenActive =
+            phase <= PHASES.COMPILE_TOKEN || phase === PHASES.COMPILE_TOKEN;
+          const parseActive =
+            (phase >= PHASES.COMPILE_PARSE && phase <= PHASES.COMPILE_PARSE) ||
+            (phase > PHASES.COMPILE_TOKEN && phase < PHASES.COMPILE_GEN);
+          const genActive = phase >= PHASES.COMPILE_GEN;
+
+          // Bloques
+          const glowToken =
+            phase === PHASES.COMPILE_TOKEN ? colors.accent : null;
+          drawGlowBox(
+            70,
+            compY + 20,
+            280,
+            55,
+            12,
+            tokenActive ? colors.accent : "#2e4460",
+            glowToken ? 16 : 0,
+          );
+          drawText(
+            "🔤 Tokenizing",
+            90,
+            compY + 44,
+            18,
+            tokenActive ? "#ffffff" : "#b0c6e9",
+            "600",
+          );
+          drawText("var → a → = → 2 → ;", 90, compY + 64, 13, "#9bb1d1");
+
+          const arrow1Prog =
+            phase === PHASES.COMPILE_TOKEN
+              ? prog
+              : phase > PHASES.COMPILE_TOKEN
+                ? 1
+                : 0;
+          drawArrow(
+            355,
+            compY + 48,
+            405,
+            compY + 48,
+            colors.arrow,
+            2.8,
+            false,
+            arrow1Prog,
+          );
+
+          const glowParse =
+            phase === PHASES.COMPILE_PARSE ? colors.accent : null;
+          drawGlowBox(
+            410,
+            compY + 20,
+            280,
+            55,
+            12,
+            parseActive ? colors.accent : "#2e4460",
+            glowParse ? 16 : 0,
+          );
+          drawText(
+            "🌳 Parsing (AST)",
+            430,
+            compY + 44,
+            18,
+            parseActive ? "#ffffff" : "#b0c6e9",
+            "600",
+          );
+          drawText(
+            "Árbol sintáctico abstracto",
+            430,
+            compY + 64,
+            13,
+            "#9bb1d1",
+          );
+
+          const arrow2Prog =
+            phase === PHASES.COMPILE_PARSE
+              ? prog
+              : phase > PHASES.COMPILE_PARSE
+                ? 1
+                : 0;
+          drawArrow(
+            695,
+            compY + 48,
+            745,
+            compY + 48,
+            colors.arrow,
+            2.8,
+            false,
+            arrow2Prog,
+          );
+
+          drawGlowBox(
+            750,
+            compY + 20,
+            280,
+            55,
+            12,
+            genActive ? colors.accent : "#2e4460",
+            phase === PHASES.COMPILE_GEN ? 16 : 0,
+          );
+          drawText(
+            "⚙️ Generación",
+            770,
+            compY + 44,
+            18,
+            genActive ? "#ffffff" : "#b0c6e9",
+            "600",
+          );
+          drawText("Instrucciones ejecutables", 770, compY + 64, 13, "#9bb1d1");
+
+          // ------- SECCIÓN 2: ACTORES -------
+          const actorsY = 260;
+          drawTitle("② Motor · Compilador · Scope", 60, actorsY - 10, 20);
+
+          const actorsPhase = phase >= PHASES.ACTORS_INTRO;
+          let engineGlow = false,
+            compGlow = false,
+            scopeGlow = false;
+          if (phase === PHASES.ACTORS_INTRO) {
+            if (prog < 0.33) engineGlow = true;
+            else if (prog < 0.66) compGlow = true;
+            else scopeGlow = true;
+          } else if (phase >= PHASES.ACTORS_INTERACT) {
+            engineGlow = compGlow = scopeGlow = true;
+          }
+
+          drawGlowBox(
+            80,
+            actorsY + 15,
+            300,
+            100,
+            16,
+            colors.engine,
+            engineGlow ? 16 : 0,
+          );
+          drawText("🔥 MOTOR", 105, actorsY + 45, 20, "#ffe0cc", "bold");
+          drawText(
+            "Ejecuta código, pregunta al Scope",
+            105,
+            actorsY + 70,
+            14,
+            "#d6c0b0",
+          );
+
+          drawGlowBox(
+            430,
+            actorsY + 15,
+            300,
+            100,
+            16,
+            colors.compiler,
+            compGlow ? 16 : 0,
+          );
+          drawText("📦 COMPILADOR", 455, actorsY + 45, 20, "#d0f0d0", "bold");
+          drawText(
+            "Tokeniza, parsea, genera código",
+            455,
+            actorsY + 70,
+            14,
+            "#b0c8b0",
+          );
+
+          drawGlowBox(
+            780,
+            actorsY + 15,
+            300,
+            100,
+            16,
+            colors.scope,
+            scopeGlow ? 16 : 0,
+          );
+          drawText("📋 SCOPE", 805, actorsY + 45, 20, "#e8d0f8", "bold");
+          drawText(
+            "Guardián de identificadores",
+            805,
+            actorsY + 70,
+            14,
+            "#c8b8d8",
+          );
+
+          if (phase >= PHASES.ACTORS_INTERACT) {
+            const interactProg = Math.min(prog * 2, 1);
+            drawArrow(
+              385,
+              actorsY + 65,
+              425,
+              actorsY + 50,
+              "#7f9fd5",
+              2,
+              true,
+              interactProg,
+            );
+            drawArrow(
+              735,
+              actorsY + 70,
+              775,
+              actorsY + 60,
+              "#7f9fd5",
+              2,
+              true,
+              interactProg,
+            );
+          }
+
+          // ------- SECCIÓN 3: var a = 2; ----------
+          const varY = 450;
+          drawTitle("③ Disección: var a = 2;", 60, varY - 10, 20);
+
+          // código fuente
+          roundedRect(60, varY + 10, 190, 42, 20, "#1f2a3f", "#4f6f9f", 2);
+          ctx.font = 'bold 20px "Fira Code", monospace';
+          ctx.fillStyle = "#e0d5c0";
+          ctx.fillText("var a = 2;", 78, varY + 39);
+
+          const declActive = phase >= PHASES.VAR_DECLARE;
+          const assignActive = phase >= PHASES.VAR_ASSIGN;
+
+          // Fase compilación (declaración)
+          let declProg = 0;
+          if (phase === PHASES.VAR_DECLARE) declProg = prog;
+          else if (phase > PHASES.VAR_DECLARE) declProg = 1;
+
+          drawArrow(
+            260,
+            varY + 30,
+            310,
+            varY + 30,
+            colors.accent,
+            2.5,
+            false,
+            declProg,
+          );
+
+          drawGlowBox(
+            320,
+            varY - 5,
+            370,
+            90,
+            14,
+            declActive ? colors.accent : "#1f2e45",
+            phase === PHASES.VAR_DECLARE ? 16 : 0,
+          );
+          drawText(
+            "📌 FASE 1: COMPILACIÓN",
+            340,
+            varY + 14,
+            16,
+            declActive ? "#fff" : "#b0c6e9",
+            "bold",
+          );
+          drawText(
+            "Compilador pregunta al Scope",
+            340,
+            varY + 36,
+            14,
+            "#b0c6e9",
+          );
+          drawText(
+            '"¿Existe «a»?" → Si no, la crea.',
+            340,
+            varY + 56,
+            14,
+            "#b0c6e9",
+          );
+          drawText("(Hoisting)", 340, varY + 74, 12, "#7f9fd5", "italic");
+
+          let assignProg = 0;
+          if (phase === PHASES.VAR_ASSIGN) assignProg = prog;
+          else if (phase > PHASES.VAR_ASSIGN) assignProg = 1;
+
+          drawArrow(
+            700,
+            varY + 35,
+            760,
+            varY + 35,
+            colors.engine,
+            2.5,
+            false,
+            assignProg,
+          );
+
+          drawGlowBox(
+            770,
+            varY - 5,
+            350,
+            90,
+            14,
+            assignActive ? colors.engine : "#1f2e45",
+            phase === PHASES.VAR_ASSIGN ? 16 : 0,
+          );
+          drawText(
+            "⚡ FASE 2: EJECUCIÓN",
+            790,
+            varY + 14,
+            16,
+            assignActive ? "#ffe0cc" : "#b0c6e9",
+            "bold",
+          );
+          drawText("Motor ejecuta a = 2;", 790, varY + 36, 14, "#d6c0b0");
+          drawText(
+            'Pregunta al Scope: "Dame «a»"',
+            790,
+            varY + 56,
+            14,
+            "#d6c0b0",
+          );
+          drawText("→ Asigna el valor 2", 790, varY + 74, 14, "#d6c0b0");
+
+          // ------- SECCIÓN 4: LHS / RHS ----------
+          const lhsY = 610;
+          drawTitle("④ Consultas de memoria: LHS vs RHS", 60, lhsY - 10, 20);
+
+          const lhsActive = phase >= PHASES.LHS_RHS;
+          let lhsProg = 0,
+            rhsProg = 0;
+          if (phase === PHASES.LHS_RHS) {
+            lhsProg = Math.min(prog * 1.5, 1);
+            rhsProg = Math.max(0, (prog - 0.5) * 2);
+          } else if (phase > PHASES.LHS_RHS) {
+            lhsProg = 1;
+            rhsProg = 1;
+          }
+
+          drawGlowBox(
+            60,
+            lhsY + 15,
+            510,
+            100,
+            16,
+            colors.lhs,
+            lhsActive ? 16 : 0,
+          );
+          drawText(
+            "🎯 LHS — Left‑Hand Side",
+            85,
+            lhsY + 38,
+            18,
+            "#ffc2b3",
+            "bold",
+          );
+          drawText(
+            "Busca variable para ASIGNAR (target)",
+            85,
+            lhsY + 60,
+            14,
+            "#dbb8b0",
+          );
+          drawText(
+            "Ej: a = 2;   (si no existe, en no-estricto se crea global)",
+            85,
+            lhsY + 82,
+            13,
+            "#c09080",
+          );
+
+          drawGlowBox(
+            610,
+            lhsY + 15,
+            510,
+            100,
+            16,
+            colors.rhs,
+            lhsActive ? 16 : 0,
+          );
+          drawText(
+            "📖 RHS — Right‑Hand Side",
+            635,
+            lhsY + 38,
+            18,
+            "#f5e0b0",
+            "bold",
+          );
+          drawText(
+            "Recupera el VALOR de la variable (fuente)",
+            635,
+            lhsY + 60,
+            14,
+            "#d0c0a0",
+          );
+          drawText(
+            "Ej: console.log(a);   ReferenceError si no existe",
+            635,
+            lhsY + 82,
+            13,
+            "#c0a870",
+          );
+
+          if (lhsActive) {
+            drawArrow(
+              575,
+              lhsY + 60,
+              605,
+              lhsY + 60,
+              "#f0b090",
+              2.5,
+              false,
+              lhsProg,
+            );
+          }
+
+          // Texto extra modo estricto
+          if (phase >= PHASES.SUMMARY) {
+            drawText(
+              '⚡ ECMA-262: "use strict" evita creación automática en LHS',
+              60,
+              H - 30,
+              15,
+              "#8cb3ff",
+            );
+          }
+
+          // Actualizar texto de fase
+          const phaseNames = [
+            "Tokenizing",
+            "Parsing (AST)",
+            "Generación",
+            "Presentando actores",
+            "Interacción Motor/Comp/Scope",
+            "Declaración (var a)",
+            "Asignación (a=2)",
+            "LHS vs RHS",
+            "Completo",
+          ];
+          phaseDisplay.innerText = `🔹 ${phaseNames[phase]} ${phase < PHASES.SUMMARY ? "●".repeat(Math.floor(prog * 5)) : "✓"}`;
+        }
+
+        // Lógica de animación
+        function updateAnimation() {
+          if (!animationEnabled && !manualStep) return;
+
+          if (manualStep) {
+            manualStep = false;
+            phaseProgress = Math.min(phaseProgress + 0.25, 1.0);
+          } else {
+            phaseProgress += 0.012;
+          }
+
+          if (phaseProgress >= 1.0) {
+            phaseProgress = 0;
+            if (currentPhase < PHASES.SUMMARY) {
+              currentPhase++;
+            } else {
+              // mantener en summary pero sin loop infinito (pausar)
+              animationEnabled = false;
+              playPauseBtn.innerHTML = "▶️ Reproducir";
+              currentPhase = PHASES.SUMMARY;
+              phaseProgress = 1;
+            }
+          }
+
+          drawScene(currentPhase, phaseProgress);
+
+          if (animationEnabled) {
+            animFrame = requestAnimationFrame(updateAnimation);
+          } else {
+            if (animFrame) cancelAnimationFrame(animFrame);
+            animFrame = null;
+          }
+        }
+
+        function startAnimation() {
+          if (animFrame) cancelAnimationFrame(animFrame);
+          animationEnabled = true;
+          playPauseBtn.innerHTML = "⏸️ Pausa";
+          animFrame = requestAnimationFrame(updateAnimation);
+        }
+
+        function pauseAnimation() {
+          animationEnabled = false;
+          playPauseBtn.innerHTML = "▶️ Reproducir";
+          if (animFrame) {
+            cancelAnimationFrame(animFrame);
+            animFrame = null;
+          }
+        }
+
+        function resetAnimation() {
+          pauseAnimation();
+          currentPhase = PHASES.COMPILE_TOKEN;
+          phaseProgress = 0;
+          drawScene(currentPhase, phaseProgress);
+          phaseDisplay.innerText = "🔹 Fase: Tokenizing";
+          playPauseBtn.innerHTML = "▶️ Reproducir";
+        }
+
+        function stepAnimation() {
+          if (animationEnabled) pauseAnimation();
+          manualStep = true;
+          updateAnimation();
+        }
+
+        // Event listeners
+        playPauseBtn.addEventListener("click", () => {
+          if (animationEnabled) pauseAnimation();
+          else startAnimation();
+        });
+
+        document
+          .getElementById("resetBtn")
+          .addEventListener("click", resetAnimation);
+        document
+          .getElementById("stepBtn")
+          .addEventListener("click", stepAnimation);
+
+        // Dibujo inicial
+        resetAnimation();
+        // Auto-play al cargar
+        setTimeout(() => startAnimation(), 200);
+      })();
+    </script>
+  </body>
+</html>
