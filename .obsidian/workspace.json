@@ -13,7 +13,7 @@
             "dimension": 73.4567901234568,
             "children": [
               {
-                "id": "0e04a1245a2ad709",
+                "id": "ef9e852d1f7a379e",
                 "type": "leaf",
                 "state": {
                   "type": "excalidraw",
@@ -29,7 +29,7 @@
           {
             "id": "f6257cbebbdb147e",
             "type": "split",
-            "dimension": 26.543209876543212,
+            "dimension": 26.54320987654321,
             "children": [
               {
                 "id": "1f8231cbebeb7dd1",
@@ -222,11 +222,21 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "0e04a1245a2ad709",
+  "active": "ef9e852d1f7a379e",
   "lastOpenFiles": [
+    "Pasted Image 20260503234150_906.png",
+    "Pasted Image 20260503233102_589.png",
+    "Excalidraw/FLUJO_ZONA_CAMINANTE.md",
+    "Pasted Image 20260503232707_886.png",
+    "07_RECURSOS/Pasted Image 20260503231413_585.png",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_5 MARKDOWN.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_4 MARKDOWN.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_3 MARKDOWN.md",
+    "Pasted image 20260503224919.png",
+    "Pasted image 20260429120149.png",
+    "README.md",
     "08_TODO_SE_PERDIO/TODO_SE_PERDIO....md",
     "08_TODO_SE_PERDIO/FLUJO_ZONA_DEL_CAMINANTE.canvas",
-    "Excalidraw/FLUJO_ZONA_CAMINANTE.md",
     "Excalidraw/UML-ER-library.excalidrawlib",
     "Excalidraw/system-design-template.excalidrawlib",
     "Excalidraw/stick-figures.excalidrawlib",
@@ -238,7 +248,6 @@
     "Excalidraw/decision-flow-control.excalidrawlib",
     "Excalidraw/libraries/icons.excalidrawlib",
     "02_TRABAJOS_NEGOCIOS/INIT_1.md",
-    "Pasted image 20260429120149.png",
     "06_NOTAS_IDEAS_RAPIDAS/hoy 21-04-26.md",
     "02_TRABAJOS_NEGOCIOS/Sin título.canvas",
     "02_TRABAJOS_NEGOCIOS/MINI_IMPRENTA/INICIO_IMPRENTA.md",
@@ -258,20 +267,12 @@
     "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/TALLER_ING_ALFREDO_HUAMAN/TALLER_1.md",
     "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421224535.png",
     "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421223512.png",
-    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421222421.png",
-    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421221518.png",
-    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421214408.png",
-    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421214318.png",
     "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/FASE_0_JAVASCRIPT.md",
     "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/PRIMEROS_PASOS_RUTA_GENERAL.md",
-    "README.md",
     "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/PREGUNTAS.md",
     "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/TEMARIO_DE_ELOQUENT_JAVASCRIPT_4TH.md",
     "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/VIDEOS_YOUTUBE/COMO_DESARROLLAR_UN_FOCO_TAN_POTENTE.md",
     "Sin título.md",
-    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/HOTMART.md",
-    "00SISTEMA_DE_ZONA/PLUGINS_USADOS.md",
-    "2026-04-14.md",
     "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/Sin título.canvas"
   ]
 }
