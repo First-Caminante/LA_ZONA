@@ -10,26 +10,97 @@
           {
             "id": "ff847c4ba8b9cd8f",
             "type": "tabs",
-            "dimension": 73.4567901234568,
+            "dimension": 76.02880658436214,
             "children": [
               {
-                "id": "ef9e852d1f7a379e",
+                "id": "23de5b045ee95fc2",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/GLOSARIO_JAVASCRIPT.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "GLOSARIO_JAVASCRIPT"
+                }
+              },
+              {
+                "id": "f2676c28e0c6a9de",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/FASE_0_JAVASCRIPT_PARTE_DOS.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "FASE_0_JAVASCRIPT_PARTE_DOS"
+                }
+              },
+              {
+                "id": "f41e5cbe721859c8",
                 "type": "leaf",
                 "state": {
                   "type": "excalidraw",
                   "state": {
-                    "file": "Excalidraw/FLUJO_ZONA_CAMINANTE.md"
+                    "file": "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/FASE_0_EXCALIDRAW.md"
                   },
                   "icon": "excalidraw-icon",
-                  "title": "FLUJO_ZONA_CAMINANTE"
+                  "title": "FASE_0_EXCALIDRAW"
+                }
+              },
+              {
+                "id": "a590294fb01cbb77",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "05_DIARIO/2026/mayo/06-05-26.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "06-05-26"
+                }
+              },
+              {
+                "id": "894054f9c5279fab",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "04_ZONA_LECTURA/DISCIPLINA/LA_LLAMADA_DEL_CORAJE/RESUMEN_LA_LLAMADA_DEL_CORAJE.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "RESUMEN_LA_LLAMADA_DEL_CORAJE"
+                }
+              },
+              {
+                "id": "77101aa2d15dba99",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "04_ZONA_LECTURA/HABITOS/HABITOS_ATOMICOS/RESUMEN_HABITOS_ATOMICOS.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "RESUMEN_HABITOS_ATOMICOS"
                 }
               }
-            ]
+            ],
+            "currentTab": 4
           },
           {
             "id": "f6257cbebbdb147e",
             "type": "split",
-            "dimension": 26.54320987654321,
+            "dimension": 23.97119341563786,
             "children": [
               {
                 "id": "1f8231cbebeb7dd1",
@@ -42,13 +113,12 @@
                     "state": {
                       "type": "outline",
                       "state": {
-                        "file": "Excalidraw/FLUJO_ZONA_CAMINANTE.md",
                         "followCursor": true,
                         "showSearch": false,
                         "searchQuery": ""
                       },
                       "icon": "lucide-list",
-                      "title": "Esquema de FLUJO_ZONA_CAMINANTE"
+                      "title": "Esquema"
                     }
                   }
                 ]
@@ -131,7 +201,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 237,
+    "width": 275,
     "collapsed": true
   },
   "right": {
@@ -219,60 +289,61 @@
       "templates:Insertar plantilla": false,
       "command-palette:Abrir paleta de comandos": false,
       "bases:Crear nueva base": false,
-      "obsidian-excalidraw-plugin:New drawing": false
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "remotely-save:Remotely Save": false
     }
   },
-  "active": "ef9e852d1f7a379e",
+  "active": "8bc6da00e3b8df5f",
   "lastOpenFiles": [
-    "Pasted Image 20260503234150_906.png",
-    "Pasted Image 20260503233102_589.png",
-    "Excalidraw/FLUJO_ZONA_CAMINANTE.md",
-    "Pasted Image 20260503232707_886.png",
-    "07_RECURSOS/Pasted Image 20260503231413_585.png",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_5 MARKDOWN.md",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_4 MARKDOWN.md",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_3 MARKDOWN.md",
-    "Pasted image 20260503224919.png",
-    "Pasted image 20260429120149.png",
-    "README.md",
-    "08_TODO_SE_PERDIO/TODO_SE_PERDIO....md",
-    "08_TODO_SE_PERDIO/FLUJO_ZONA_DEL_CAMINANTE.canvas",
-    "Excalidraw/UML-ER-library.excalidrawlib",
-    "Excalidraw/system-design-template.excalidrawlib",
-    "Excalidraw/stick-figures.excalidrawlib",
-    "Excalidraw/some-handdrawn-signs.excalidrawlib",
-    "Excalidraw/some-common-cloud-apps.excalidrawlib",
-    "Excalidraw/robots.excalidrawlib",
-    "Excalidraw/icons.excalidrawlib",
-    "Excalidraw/forms.excalidrawlib",
-    "Excalidraw/decision-flow-control.excalidrawlib",
-    "Excalidraw/libraries/icons.excalidrawlib",
-    "02_TRABAJOS_NEGOCIOS/INIT_1.md",
-    "06_NOTAS_IDEAS_RAPIDAS/hoy 21-04-26.md",
-    "02_TRABAJOS_NEGOCIOS/Sin título.canvas",
-    "02_TRABAJOS_NEGOCIOS/MINI_IMPRENTA/INICIO_IMPRENTA.md",
-    "Sin título.canvas",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/TEMARIO_NOTEBOOKLM_JS.md",
-    "02_TRABAJOS_NEGOCIOS/OUTLINER_MUERTE_TRIADA/OUTLINER_MUERTE_TRIADA_PRUEBA_FINAL.md",
-    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/CONTENIDO_VIRAL_IA/ESTRATEGIA_1.md",
-    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260429112026.png",
-    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/ARCO_TRIADA.md",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/LENGUAJE_JAVASCRIPT.md",
-    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/AUDITORIA_DIA_27-04-26.md",
-    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/VIDEOS_YOUTUBE/COMO_SER_TAN_PRODUCTIVO_QUE_PAREZCA_ILEGAL.md",
-    "07_RECURSOS/DIARIO/Pasted image 20260427220511.png",
-    "07_RECURSOS/DIARIO/Pasted image 20260427220418.png",
-    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/TALLER_ING_ALFREDO_HUAMAN/TALLER_3.md",
-    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/TALLER_ING_ALFREDO_HUAMAN/TALLER_2.md",
-    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/hotmart/TALLER_ING_ALFREDO_HUAMAN/TALLER_1.md",
-    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421224535.png",
-    "07_RECURSOS/ESTUDYHOTMART/Pasted image 20260421223512.png",
+    "04_ZONA_LECTURA/DISCIPLINA/LA_LLAMADA_DEL_CORAJE/RESUMEN_LA_LLAMADA_DEL_CORAJE.md",
+    "04_ZONA_LECTURA/INTELIGENCIA/SIN_LIMITES/RESUMEN_SIN_LIMITES.md",
+    "04_ZONA_LECTURA/DISCIPLINA/LA_LLAMADA_DEL_CORAJE",
+    "Pasted image 20260506120205.png",
+    "Pasted image 20260506120149.png",
+    "Pasted image 20260506120028.png",
+    "Pasted image 20260506115651.png",
+    "04_ZONA_LECTURA/HABITOS/HABITOS_ATOMICOS/APLICANDO_HABITOS_ATOMICOS.md",
+    "Pasted Image 20260506114918_552.png",
+    "05_DIARIO/2026/mayo/06-05-26.md",
+    "04_ZONA_LECTURA/HABITOS/HABITOS_ATOMICOS/RESUMEN_HABITOS_ATOMICOS.md",
+    "Pasted Image 20260506114233_997.png",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/GLOSARIO_JAVASCRIPT.md",
+    "04_ZONA_LECTURA/DISCIPLINA/LA_DISCIPLINA_MARCARA_TU_DESTINO/ANTES_DE_EMPEZAR.md",
+    "04_ZONA_LECTURA/DISCIPLINA/LA_DISCIPLINA_MARCARA_TU_DESTINO/INTRODUCCION.md",
+    "05_DIARIO/2026/mayo/05-05-26.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/FASE_0_JAVASCRIPT_PARTE_DOS.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/FASE_0_EXCALIDRAW.md",
+    "07_RECURSOS/INFORMATICA/javascript/primero.js~",
     "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/FASE_0_JAVASCRIPT.md",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/MR.ILITO/CANSADO DE ATRAER PROSPECTOS.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/CURSO_EDTEAM_INICIO.md",
     "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/PRIMEROS_PASOS_RUTA_GENERAL.md",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/PREGUNTAS.md",
-    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/TEMARIO_DE_ELOQUENT_JAVASCRIPT_4TH.md",
-    "01_ESTUDIO_CAMINANTE/DESARROLLO_PERSONAL/VIDEOS_YOUTUBE/COMO_DESARROLLAR_UN_FOCO_TAN_POTENTE.md",
+    "Pasted Image 20260505183432_251.png",
+    "Pasted Image 20260505183405_523.png",
+    "Pasted Image 20260505182731_562.png",
+    "07_RECURSOS/INFORMATICA/grafico/pruebitas.js~",
+    "Pasted image 20260505165433.png",
+    "07_RECURSOS/INFORMATICA/javascript/primero.js",
+    "07_RECURSOS/INFORMATICA/javascript",
+    "04_ZONA_LECTURA/BASE_MENTAL/DEJA_DE_SER_TU/3.-VE MAS HALLA DEL CUERPO.md",
+    "04_ZONA_LECTURA/MENTE MILLONARIA/PIENSE Y HAGASE RICO/PIENSE Y HAGASE RICO.md",
+    "05_DIARIO/2026/mayo/04-05-26.md",
+    "04_ZONA_LECTURA/MENTE MILLONARIA/PIENSE Y HAGASE RICO/LOS PENSAMIENTOS SON COSAS.md",
+    "04_ZONA_LECTURA/MENTE MILLONARIA/PIENSE Y HAGASE RICO",
+    "04_ZONA_LECTURA/MENTE MILLONARIA",
+    "04_ZONA_LECTURA/BASE_MENTAL/DEJA_DE_SER_TU/1.-TU_YO_CUANTICO.md",
+    "04_ZONA_LECTURA/BASE_MENTAL/DEJA_DE_SER_TU/2.-VE MAS HALLA DEL ENTORNO.md",
+    "04_ZONA_LECTURA/BASE_MENTAL/DEJA_DE_SER_TU/CAPITULO_1 EL YO CUANTICO.md",
+    "04_ZONA_LECTURA/BASE_MENTAL/DEJA_DE_SER_TU/Sin nombre",
+    "01_ESTUDIO_CAMINANTE/MARKETING_VENTAS/MR.ILITO",
+    "00SISTEMA_DE_ZONA/FLUJO_ZONA_CAMINANTE.md",
     "Sin título.md",
+    "05_DIARIO/2026/mayo",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/FRONTEND/JAVASCRIPT/PREGUNTAS.md",
+    "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/FASE_5 MARKDOWN.md",
+    "08_TODO_SE_PERDIO/FLUJO_ZONA_DEL_CAMINANTE.canvas",
+    "02_TRABAJOS_NEGOCIOS/Sin título.canvas",
+    "Sin título.canvas",
     "01_ESTUDIO_CAMINANTE/INFORMATICA/LENGUAJES/MARKDOWN/Sin título.canvas"
   ]
 }

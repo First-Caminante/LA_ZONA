@@ -290,6 +290,11 @@ La conversación real (Scope Chain / Cadena de Scopes) en YDKJS es así:
 
 ---
 
+| Concepto         | Qué es                            |
+| ---------------- | --------------------------------- |
+| Bytecode         | Formato intermedio                |
+| Intérprete       | Ejecuta bytecode                  |
+| Compilador (JIT) | Convierte bytecode → machine code |
 ### ⚠️ Desafío de Pensamiento Crítico: El Choque de Trenes ⚠️
 
 Ahora que sabes que el Compilador registra TODO (Variables y Funciones) en el **Scope** en la Fase 1, y que el Motor (Ignition) ejecuta el código línea por línea en la Fase 2 subiendo por la cuerda `[[OuterEnv]]` si es necesario...
@@ -309,4 +314,112 @@ function mostrarHeroe() {
 mostrarHeroe();
 ```
 
-¿Qué imprime exactamente el `console.log`? Te lo advierto: la respuesta obvia está mal. Piensa en el **Hoisting** dentro del Entorno Léxico de la función. ¿Qué hace el Compilador con `var heroe = "Superman";` en la Fase 1 dentro de esa función? ¿Y cómo afecta eso a la lectura que hace el Motor en la línea de arriba? Explícame el "por qué".
+
+
+---
+
+### La Anatomía de la FASE 2 (Ejecución)
+
+Imagina que el Motor V8 es un trabajador extremadamente eficiente, pero tiene un defecto crítico: **Es Single-Threaded (de un solo hilo)**. Solo tiene un cerebro y un par de manos. Solo puede hacer **una sola cosa a la vez**. No puede ejecutar dos funciones al mismo tiempo.
+
+Para no perderse en el código y saber exactamente en qué línea de qué función está trabajando, el Motor V8 utiliza una estructura de datos llamada **Call Stack (Pila de Llamadas)**.
+
+#### 1. ¿Qué es el Call Stack? (Estructura Física)
+
+Es una pila física en la memoria RAM que funciona bajo el principio **LIFO (Last In, First Out - Último en entrar, Primero en salir)**. Imagina una pila de platos en un restaurante: solo puedes poner un plato nuevo en la cima, y solo puedes retirar el plato que está en la cima. Nunca sacas uno del medio.
+
+#### 2. ¿Qué se guarda en el Call Stack? (Los Contextos de Ejecución)
+
+El Motor no apila "código suelto". Según ECMA-262, el Motor apila **Execution Contexts (Contextos de Ejecución)**. Un Contexto de Ejecución es como una caja o un "Frame" temporal que contiene:
+
+1. **El Lexical Environment (Scope):** El mapa de variables locales de esa función.
+
+2. **El valor de `this`:** A quién pertenece la función en ese momento.
+
+3. **El Estado:** En qué línea de código se quedó pausada.
+
+
+---
+
+### La Dinámica Paso a Paso (Técnica Feynman)
+
+Vamos a ejecutar este código juntos. Lee cada paso e imagina los platos apilándose.
+
+
+```js
+function saludar() {
+  console.log("Hola");
+}
+
+function iniciar() {
+  saludar();
+}
+
+iniciar();
+```
+
+**Mecánica del Motor en la Fase 2:**
+
+1. **Nace el Programa:** El Motor crea un plato gigante llamado **Global Execution Context** (Contexto Global) y lo pone en la base del Call Stack. El Motor empieza a leer las líneas globales.
+
+2. **Llamada a `iniciar()`:** El Motor llega a la última línea. Pausa el Contexto Global (lo congela), crea un nuevo plato llamado **Contexto de `iniciar`** y lo apila encima (Push). Ahora el Motor _solo_ mira el plato de arriba.
+
+3. **Dentro de `iniciar()`:** El Motor entra a la función y lee la instrucción `saludar()`.
+
+4. **Llamada a `saludar()`:** El Motor congela el plato de `iniciar`, crea un nuevo plato llamado **Contexto de `saludar`** y lo apila hasta arriba (Push). El Stack ahora tiene 3 platos.
+
+5. **Ejecución y Destrucción (Pop):** * El Motor imprime `"Hola"`.
+
+    - La función `saludar()` termina (llega a su llave `}`). Su plato es **destruido y expulsado** del Call Stack (Pop). El _Garbage Collector_ limpia su memoria.
+
+    - El Motor vuelve a mirar el plato de abajo: `iniciar`. Se da cuenta de que no hay más líneas ahí. Destruye el plato de `iniciar` (Pop).
+
+    - El Motor vuelve al plato Global. El programa termina.
+
+
+---
+
+### Tu Desafío de Pensamiento Crítico
+
+Si entiendes que el Call Stack empuja (Push) funciones cuando las llama, y las expulsa (Pop) y destruye cuando terminan (cuando llegan a un `return` o a la llave final `}`)...
+
+**Vuelve a mirar el código letal de tu desafío pendiente:**
+
+JavaScript
+
+```js
+function bucleInfinito() {
+  bucleInfinito();
+}
+
+bucleInfinito();
+```
+
+Sabiendo que el Call Stack es una pila física de cajas (Contextos de Ejecución) en la memoria RAM de tu computadora gobernada por la regla LIFO, descríbeme mecánicamente, paso a paso: **¿Qué está haciendo el Motor V8 con esa pila de platos y por qué lanza el error `Maximum call stack size exceeded`?**
+
+
+
+
+### Siguiente Nivel: El Espejismo del Tiempo (Asincronía)
+
+Ahora que sabes que el **Call Stack** solo puede hacer **una cosa a la vez**, te vas a enfrentar al mayor obstáculo de los desarrolladores intermedios. Vamos a basarnos en la sección del **Event Loop** (Bucle de Eventos) de tus apuntes (`06_Adicional_execution_model.md` y `PARTE_2_EL_NAVEGADOR.md`).
+
+Analiza este código rigurosamente:
+
+```js
+console.log("Primero");
+
+setTimeout(function temporizador() {
+  console.log("Segundo");
+}, 0); 
+
+console.log("Tercero");
+```
+
+Nota que el `setTimeout` tiene un retraso de **0 milisegundos**. Es decir, la orden es ejecutar la función `temporizador` _inmediatamente_.
+
+Basándote en la regla inquebrantable de que el Motor de JavaScript ejecuta el código línea por línea y usando el **Call Stack**, dime: **¿Cuál es el orden exacto en el que se imprimen estas palabras en la consola y, lo más importante, DÓNDE se esconde la función `temporizador` mientras espera, si no está en el Call Stack?**
+
+
+
+**Callback Queue (Cola de Tareas)**.??
