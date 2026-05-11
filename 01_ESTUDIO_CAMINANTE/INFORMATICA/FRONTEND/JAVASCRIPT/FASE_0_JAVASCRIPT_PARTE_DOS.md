@@ -207,6 +207,7 @@ Te recuerdo que el `setTimeout` es de **0 milisegundos**, y la Promesa está res
 
 2. Justifica mecánicamente cada paso: qué va al Call Stack, qué va a la Macrotask Queue, qué va a la Microtask Queue, y cómo toma la decisión final el Event Loop. Te leo.
 
+---
 
 Freno de emergencia aceptado. Tienes absolutamente **toda la razón**.
 
@@ -228,8 +229,6 @@ Físicamente, no es más que una estructura de datos tipo "Diccionario" o "Hash 
 
 Cuando tú escribes esto en la Fase 1 (Compilación):
 
-JavaScript
-
 ```JS
 const batman = {
   nombre: "Bruce Wayne",
@@ -238,11 +237,11 @@ const batman = {
 ```
 
 1. **En el Call Stack / Scope:** El Motor crea la variable `batman`. Pero **no** guarda los datos ahí. El Stack está diseñado para ser rápido y ligero, no para almacenar estructuras grandes.
-    
+
 2. **En el Memory Heap:** El Motor va al gran almacén de memoria (el Heap), solicita un bloque de bytes contiguos, y ahí construye el diccionario con `nombre` y `edad`.
-    
+
 3. **El Puntero:** El Motor guarda en la variable `batman` del Stack únicamente la **dirección de memoria** (un puntero hexadecimal, ej. `0x001A`) que apunta a ese bloque en el Heap.
-    
+
 
 **Técnica Feynman:** El Objeto es una casa de ladrillos (en el Heap). La variable `batman` no es la casa, es un papelito con la dirección escrita: "Avenida Siempreviva 123" (en el Stack).
 
@@ -253,13 +252,13 @@ Según tus archivos (`3_Objects_Classes.md`), un objeto es mucho más complejo i
 Para la propiedad `nombre: "Bruce Wayne"`, el motor V8 guarda en realidad esto:
 
 - `[[Value]]`: "Bruce Wayne"
-    
+
 - `[[Writable]]`: true (¿Se puede reasignar?)
-    
+
 - `[[Enumerable]]`: true (¿Aparece en un bucle `for...in`?)
-    
+
 - `[[Configurable]]`: true (¿Se puede borrar esta propiedad del objeto?)
-    
+
 
 ---
 
@@ -269,9 +268,8 @@ Ahora que sabes que un Objeto es un contenedor físico de propiedades en el Heap
 
 Imagina que tenemos múltiples contenedores en el Heap:
 
-JavaScript
 
-```
+```js
 function identificar() {
   return "Soy " + /* ¿CÓMO LEO EL NOMBRE DEL OBJETO QUE ME LLAMA? */;
 }
@@ -291,11 +289,11 @@ Para eso los creadores de JavaScript inventaron `this`. Kyle Simpson en YDKJS lo
 Cuando tú llamas a `batman.hablar()`, el Motor V8 (en la Fase de Ejecución) hace lo siguiente:
 
 1. "Oh, están llamando a la función `identificar` usando el objeto `batman` como vehículo".
-    
+
 2. Al crear el _Execution Context_ de la función para apilarlo en el Call Stack, el Motor V8 toma la dirección de memoria de `batman` y la inyecta a la fuerza en la palabra clave `this` dentro de la función.
-    
+
 3. Ahora la función no está ciega. `this.nombre` se evalúa como `batman.nombre`.
-    
+
 
 ---
 
@@ -307,7 +305,7 @@ Analiza este código rigurosamente en tu mente, paso a paso, como si fueras el M
 
 JavaScript
 
-```
+```js
 const jugador1 = {
   alias: "SubZero",
   saludar: function() {
@@ -327,5 +325,5 @@ jugador2.saludar();
 ```
 
 1. **Cuando ejecuto `jugador2.saludar()`, ¿qué se imprime en la consola?**
-    
+
 2. **Basándote en la teoría de Punteros en el Memory Heap y en la resolución dinámica de `this` (quién es el vehículo de la llamada), explícame _mecánicamente_ el "por qué" de tu respuesta.** Demuéstrame que puedes ver los cables conectados por detrás.

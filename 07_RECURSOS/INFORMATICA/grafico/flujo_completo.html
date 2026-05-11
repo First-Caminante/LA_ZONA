@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAVASCRIPT_MUERTE: Fase 0 - Motor y Memoria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&display=swap");
+
+      body {
+        font-family: "Fira Code", monospace;
+        background-color: #050505;
+        color: #00ff41;
+        overflow-x: hidden;
+      }
+
+      .crt-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background:
+          linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+          linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
+          );
+        background-size:
+          100% 2px,
+          3px 100%;
+        z-index: 50;
+        pointer-events: none;
+      }
+
+      .neon-border {
+        box-shadow:
+          0 0 10px #00ff41,
+          inset 0 0 10px #00ff41;
+        border: 1px solid #00ff41;
+      }
+
+      .neon-border-red {
+        box-shadow:
+          0 0 15px #ff003c,
+          inset 0 0 15px #ff003c;
+        border: 1px solid #ff003c;
+        color: #ff003c;
+      }
+
+      .glitch-text {
+        animation: glitch 1s linear infinite;
+      }
+
+      @keyframes glitch {
+        2%,
+        64% {
+          transform: translate(2px, 0) skew(0deg);
+        }
+        4%,
+        60% {
+          transform: translate(-2px, 0) skew(0deg);
+        }
+        62% {
+          transform: translate(0, 0) skew(5deg);
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-in forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Memory visualizer styles */
+      .memory-block {
+        transition: all 0.3s ease;
+      }
+      .pointer-line {
+        position: absolute;
+        height: 2px;
+        background-color: #00ff41;
+        transform-origin: left center;
+        transition: all 0.5s ease;
+        box-shadow: 0 0 8px #00ff41;
+        z-index: 10;
+      }
+
+      .hide {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col p-4 relative">
+    <div class="crt-overlay"></div>
+
+    <header
+      class="border-b border-[#00ff41] pb-4 mb-6 relative z-10 flex justify-between items-end"
+    >
+      <div>
+        <h1 class="text-3xl font-bold text-red-500 glitch-text tracking-widest">
+          JAVASCRIPT_MUERTE
+        </h1>
+        <p class="text-sm opacity-80 mt-1">
+          > INITIALIZING PHASE_0: COMPILER & MEMORY_MANAGEMENT
+        </p>
+      </div>
+      <div class="text-right">
+        <span class="text-xs border border-[#00ff41] p-1"
+          >V8_ENGINE_SIMULATOR_v1.0</span
+        >
+      </div>
+    </header>
+
+    <main
+      class="flex-1 flex flex-col lg:flex-row gap-6 relative z-10 max-w-7xl mx-auto w-full"
+    >
+      <!-- Mentor Dialog Box -->
+      <div class="lg:w-1/3 neon-border bg-black/80 p-6 flex flex-col">
+        <div
+          class="flex items-center gap-3 mb-4 border-b border-[#00ff41]/30 pb-2"
+        >
+          <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+          <h2 class="text-xl font-bold">MENSAJE DEL MENTOR</h2>
+        </div>
+        <div
+          id="dialogue-box"
+          class="flex-1 text-sm leading-relaxed space-y-4 font-light"
+        >
+          <!-- Text injected by JS -->
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+          <span id="step-counter" class="text-xs opacity-50">PASO 1/6</span>
+          <button
+            id="next-btn"
+            class="bg-[#00ff41] text-black px-6 py-2 font-bold hover:bg-white hover:text-black transition-colors focus:outline-none focus:ring-2 focus:ring-[#00ff41] focus:ring-offset-2 focus:ring-offset-black"
+          >
+            AVANZAR FLUJO [ENTER]
+          </button>
+        </div>
+      </div>
+
+      <!-- Visualizer Stage -->
+      <div
+        class="lg:w-2/3 neon-border bg-gray-950 p-6 flex flex-col overflow-hidden relative"
+        id="visualizer-stage"
+      >
+        <!-- Stage content injected by JS -->
+        <div
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full"
+        >
+          <p class="text-2xl animate-pulse">ESPERANDO INICIALIZACIÓN...</p>
+          <p class="text-sm mt-2 opacity-50">Haz clic en AVANZAR FLUJO</p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // --- CONTENT & LOGIC DEFINITION ---
+
+      const steps = [
+        {
+          title: "1. El Mito de JS Interpretado",
+          dialogue: `
+                    <p class="text-red-400 font-bold">Escúchame bien, novato.</p>
+                    <p>El 99% de los desarrolladores mediocres creen que JavaScript es un lenguaje puramente "interpretado" línea por línea. <strong>Falso.</strong></p>
+                    <p>Según <span class="text-white">YDKJS (Scope & Closures)</span>, el motor V8 compila tu código milisegundos antes de ejecutarlo. No hay magia, hay ingeniería de compiladores.</p>
+                    <p>Mira el código en la pantalla. Antes de que se ejecute la línea 1, el Compilador entra como un cirujano y aplica <span class="text-white">Tokenizing/Lexing</span>.</p>
+                `,
+          renderVisuals: () => {
+            return `
+                        <div class="h-full flex flex-col">
+                            <h3 class="text-xl mb-4 border-b border-gray-700 pb-2">CÓDIGO FUENTE</h3>
+                            <div class="bg-black p-4 rounded border border-gray-800 text-lg font-mono mb-8">
+                                <span class="text-purple-400">var</span> <span class="text-yellow-300">nombre</span> <span class="text-white">=</span> <span class="text-green-400">"Genio"</span><span class="text-white">;</span>
+                            </div>
+                            <h3 class="text-xl mb-4 border-b border-gray-700 pb-2">PROCESO DE COMPILACIÓN (V8)</h3>
+                            <div class="flex-1 border border-dashed border-gray-700 p-4 relative flex items-center justify-center">
+                                <span class="opacity-50">A la espera de Tokenizing...</span>
+                            </div>
+                        </div>
+                    `;
+          },
+        },
+        {
+          title: "2. Tokenizing / Lexing",
+          dialogue: `
+                    <p>Primeros Principios: <strong>Tokenizing</strong>.</p>
+                    <p>El compilador rompe tu código en piezas con significado atómico llamadas <em>Tokens</em>.</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1 text-xs">
+                        <li><span class="text-purple-400">var</span> -> Palabra clave (Keyword)</li>
+                        <li><span class="text-yellow-300">nombre</span> -> Identificador (LHS)</li>
+                        <li><span class="text-white">=</span> -> Operador de asignación</li>
+                        <li><span class="text-green-400">"Genio"</span> -> Valor primitivo (String)</li>
+                    </ul>
+                    <p class="mt-4">La fase léxica asigna significado semántico a cada token. Luego, esto se usa para construir el <strong>AST</strong>.</p>
+                `,
+          renderVisuals: () => {
+            return `
+                        <div class="h-full flex flex-col fade-in">
+                            <h3 class="text-xl mb-4 border-b border-gray-700 pb-2">TOKENIZING (LEXICAL ANALYSIS)</h3>
+                            <div class="bg-black p-4 rounded border border-gray-800 text-lg font-mono mb-8 opacity-30">
+                                var nombre = "Genio";
+                            </div>
+                            <div class="flex gap-4 flex-wrap justify-center mt-10">
+                                <div class="border border-[#00ff41] p-3 text-center fade-in" style="animation-delay: 0.1s">
+                                    <div class="text-purple-400">var</div>
+                                    <div class="text-[10px] text-gray-500 mt-1">Keyword</div>
+                                </div>
+                                <div class="border border-[#00ff41] p-3 text-center fade-in" style="animation-delay: 0.3s">
+                                    <div class="text-yellow-300">nombre</div>
+                                    <div class="text-[10px] text-gray-500 mt-1">Identifier</div>
+                                </div>
+                                <div class="border border-[#00ff41] p-3 text-center fade-in" style="animation-delay: 0.5s">
+                                    <div class="text-white">=</div>
+                                    <div class="text-[10px] text-gray-500 mt-1">Assignment</div>
+                                </div>
+                                <div class="border border-[#00ff41] p-3 text-center fade-in" style="animation-delay: 0.7s">
+                                    <div class="text-green-400">"Genio"</div>
+                                    <div class="text-[10px] text-gray-500 mt-1">StringLiteral</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+          },
+        },
+        {
+          title: "3. AST y Generación de Código",
+          dialogue: `
+                    <p>Tras lexificar, el motor construye el <strong>AST (Abstract Syntax Tree)</strong>.</p>
+                    <p>Es un árbol que representa la estructura jerárquica del código. Es la <em>Verdad Técnica</em> de <span class="text-white">ECMA-262</span> antes de convertirse en código máquina.</p>
+                    <p>Una vez el AST está listo, V8 genera el código de bytes ejecutable.</p>
+                    <p class="text-red-400 mt-4">¿Ves cómo no existe la magia? Es un proceso riguroso. Ahora, ¿dónde se guarda esa variable en tiempo de ejecución? Entremos a la Memoria.</p>
+                `,
+          renderVisuals: () => {
+            return `
+                        <div class="h-full flex flex-col fade-in items-center justify-center">
+                            <h3 class="text-xl mb-4 border-b border-gray-700 pb-2 w-full text-left">ABSTRACT SYNTAX TREE (AST)</h3>
+                            
+                            <!-- Simple AST Tree -->
+                            <div class="flex flex-col items-center">
+                                <div class="border border-white bg-gray-900 px-4 py-2 mb-4">VariableDeclaration</div>
+                                <div class="h-8 w-px bg-[#00ff41]"></div>
+                                <div class="border border-white bg-gray-900 px-4 py-2 mb-4 flex gap-8">
+                                    <div class="text-center">
+                                        <div class="text-[10px] text-gray-400">type</div>
+                                        <div class="text-purple-400">"var"</div>
+                                    </div>
+                                </div>
+                                <div class="h-8 w-px bg-[#00ff41]"></div>
+                                <div class="border border-[#00ff41] bg-black px-4 py-2">VariableDeclarator</div>
+                                
+                                <div class="flex w-64 justify-between mt-4">
+                                    <div class="flex flex-col items-center">
+                                        <div class="h-8 w-px bg-[#00ff41] mb-2 transform -rotate-45 translate-x-4"></div>
+                                        <div class="border border-white bg-gray-900 px-4 py-2">
+                                            <div class="text-[10px] text-gray-400">id: Identifier</div>
+                                            <div class="text-yellow-300">"nombre"</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="h-8 w-px bg-[#00ff41] mb-2 transform rotate-45 -translate-x-4"></div>
+                                        <div class="border border-white bg-gray-900 px-4 py-2">
+                                            <div class="text-[10px] text-gray-400">init: Literal</div>
+                                            <div class="text-green-400">"Genio"</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+          },
+        },
+        {
+          title: "4. Memoria: Stack, Heap y Punteros",
+          dialogue: `
+                    <p class="text-red-400 font-bold uppercase">Concepto Crítico. Presta atención.</p>
+                    <p>El Entorno de Ejecución divide la memoria en dos:</p>
+                    <ul class="list-none space-y-2 mt-2">
+                        <li><span class="text-white border-l-2 border-[#00ff41] pl-2">1. Call Stack (Pila de llamadas):</span> Rápido, estructurado. Guarda tu Contexto de Ejecución y datos PRIMITIVOS (strings, numbers, booleans).</li>
+                        <li><span class="text-white border-l-2 border-red-500 pl-2">2. Memory Heap:</span> Un almacén desestructurado gigante. Aquí viven los OBJETOS, ARRAYS y FUNCIONES.</li>
+                    </ul>
+                    <p class="mt-4 border border-gray-700 p-2 bg-gray-900">
+                        <strong>DEFINICIÓN DE PUNTERO:</strong> Un puntero no es magia oscura. Si metes un Objeto al Heap, es muy grande para el Call Stack. Así que en el Stack solo guardas una tarjeta (una dirección de memoria, ej. <code>0x00A1</code>) que "apunta" a donde está el objeto real en el Heap.
+                    </p>
+                `,
+          renderVisuals: () => {
+            return `
+                        <div class="h-full flex flex-col fade-in">
+                            <h3 class="text-xl mb-4 border-b border-gray-700 pb-2">CALL STACK vs MEMORY HEAP</h3>
+                            
+                            <div class="bg-black p-3 rounded border border-gray-800 text-sm font-mono mb-4 text-gray-400">
+                                var nombre = "Genio"; <span class="text-gray-600">// Primitivo</span><br>
+                                var obj = { level: 99 }; <span class="text-gray-600">// Objeto</span>
+                            </div>
+
+                            <div class="flex flex-1 gap-6 relative" id="memory-container">
+                                <!-- Call Stack -->
+                                <div class="w-1/2 border border-[#00ff41] flex flex-col">
+                                    <div class="bg-[#00ff41] text-black text-center font-bold py-1">CALL STACK</div>
+                                    <div class="flex-1 p-4 flex flex-col-reverse gap-2 overflow-hidden relative" id="call-stack-ui">
+                                        <!-- Global Context -->
+                                        <div class="border border-gray-600 bg-gray-900 p-2">
+                                            <div class="text-xs text-gray-500 border-b border-gray-700 mb-1">Global Execution Context</div>
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-yellow-300">nombre:</span>
+                                                <span class="text-green-400">"Genio"</span>
+                                            </div>
+                                            <div class="flex justify-between text-sm mt-1" id="ptr-origin">
+                                                <span class="text-yellow-300">obj:</span>
+                                                <span class="text-purple-400 bg-purple-900/50 px-1"><0x00A1> (Puntero)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Memory Heap -->
+                                <div class="w-1/2 border border-red-500 flex flex-col">
+                                    <div class="bg-red-500 text-black text-center font-bold py-1">MEMORY HEAP</div>
+                                    <div class="flex-1 p-4 relative" id="memory-heap-ui">
+                                        <div class="absolute top-10 right-10 border border-red-400 bg-red-950/30 p-3 rounded shadow-[0_0_10px_#ff003c]" id="ptr-dest">
+                                            <div class="text-xs text-red-300 border-b border-red-800 mb-2 pb-1">ADDRESS: 0x00A1</div>
+                                            <div class="text-white text-sm">{</div>
+                                            <div class="pl-4 text-sm"><span class="text-yellow-300">level:</span> <span class="text-blue-400">99</span></div>
+                                            <div class="text-white text-sm">}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Render pointer line dynamically with JS later -->
+                            </div>
+                        </div>
+                    `;
+          },
+          postRender: () => {
+            setTimeout(() => {
+              const origin = document.getElementById("ptr-origin");
+              const dest = document.getElementById("ptr-dest");
+              const container = document.getElementById("memory-container");
+
+              if (origin && dest && container) {
+                const oRect = origin.getBoundingClientRect();
+                const dRect = dest.getBoundingClientRect();
+                const cRect = container.getBoundingClientRect();
+
+                const startX = oRect.right - cRect.left - 50;
+                const startY = oRect.top - cRect.top + oRect.height / 2;
+
+                const endX = dRect.left - cRect.left;
+                const endY = dRect.top - cRect.top + dRect.height / 2;
+
+                const length = Math.sqrt(
+                  Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2),
+                );
+                const angle =
+                  (Math.atan2(endY - startY, endX - startX) * 180) / Math.PI;
+
+                const line = document.createElement("div");
+                line.className = "pointer-line";
+                line.style.width = `${length}px`;
+                line.style.left = `${startX}px`;
+                line.style.top = `${startY}px`;
+                line.style.transform = `rotate(${angle}deg)`;
+
+                container.appendChild(line);
+              }
+            }, 500);
+          },
+        },
+        {
+          title: "5. Consultas: LHS vs RHS",
+          dialogue: `
+                    <p>El motor V8 y el Scope colaboran en tiempo de ejecución para encontrar variables. <span class="text-white">YDKJS</span> clasifica estas búsquedas en dos tipos.</p>
+                    <div class="mt-4 bg-gray-900 border-l-4 border-yellow-500 p-2">
+                        <p class="text-yellow-500 font-bold">LHS (Left-Hand Side):</p>
+                        <p class="text-xs text-gray-300">"¿Quién es el OBJETIVO de la asignación?"</p>
+                        <p class="text-xs text-gray-400 mt-1">Ej: <code>nombre = ...</code> (Motor: "Scope, ¿tienes una caja llamada 'nombre' para guardar esto?")</p>
+                    </div>
+                    <div class="mt-4 bg-gray-900 border-l-4 border-blue-500 p-2">
+                        <p class="text-blue-500 font-bold">RHS (Right-Hand Side):</p>
+                        <p class="text-xs text-gray-300">"¿Quién tiene este VALOR?" (Retrieve His Source)</p>
+                        <p class="text-xs text-gray-400 mt-1">Ej: <code>console.log(nombre)</code> (Motor: "Scope, búscame el valor que vive dentro de 'nombre'").</p>
+                    </div>
+                    <p class="mt-4 text-xs italic">Si no comprendes esto, no sabes depurar ReferenceErrors.</p>
+                `,
+          renderVisuals: () => {
+            return `
+                        <div class="h-full flex flex-col fade-in">
+                            <h3 class="text-xl mb-4 border-b border-gray-700 pb-2">ENGINE & SCOPE CONVERSATION (YDKJS)</h3>
+                            
+                            <div class="flex flex-col gap-6 font-mono text-sm">
+                                
+                                <div class="border border-yellow-500 p-4 relative">
+                                    <span class="absolute -top-3 left-4 bg-[#050505] px-2 text-yellow-500 font-bold">LHS LOOKUP</span>
+                                    <div class="text-lg mb-2"><code><span class="text-yellow-400 border-b border-yellow-400">a</span> = 2;</code></div>
+                                    <div class="flex gap-2">
+                                        <div class="w-1/2 bg-gray-900 p-2 border border-gray-700">
+                                            <span class="text-[#00ff41]">> Engine:</span> Hey Scope, I have an LHS reference for 'a'. Ever heard of it?
+                                        </div>
+                                        <div class="w-1/2 bg-gray-900 p-2 border border-gray-700">
+                                            <span class="text-purple-400">> Scope:</span> Yes, compiler declared it just a moment ago. Here is the container.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-blue-500 p-4 relative">
+                                    <span class="absolute -top-3 left-4 bg-[#050505] px-2 text-blue-500 font-bold">RHS LOOKUP</span>
+                                    <div class="text-lg mb-2"><code>console.log(<span class="text-blue-400 border-b border-blue-400">a</span>);</code></div>
+                                    <div class="flex gap-2">
+                                        <div class="w-1/2 bg-gray-900 p-2 border border-gray-700">
+                                            <span class="text-[#00ff41]">> Engine:</span> Scope, I need an RHS reference for 'a'. Need its value.
+                                        </div>
+                                        <div class="w-1/2 bg-gray-900 p-2 border border-gray-700">
+                                            <span class="text-purple-400">> Scope:</span> Sure thing, Engine. Its value is 2.
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    `;
+          },
+        },
+        {
+          title: "6. EL EXAMEN (Técnica Feynman)",
+          dialogue: `
+                    <p class="text-red-500 font-bold text-xl glitch-text">¿ESTÁS LISTO PARA TU EXAMEN?</p>
+                    <p class="mt-4">Todo lo que te enseñé converge aquí. Si memorizaste, fallarás. Si entendiste la triangulación de V8, Memoria y ECMA-262, lo resolverás.</p>
+                    
+                    <p class="mt-4">Lee el código en la pantalla. Responde en voz alta o piensa rigurosamente:</p>
+                    <ol class="list-decimal pl-5 mt-4 space-y-2 text-sm text-gray-300">
+                        <li>Explica paso a paso qué ocurre en el <strong>Call Stack</strong> y en el <strong>Heap</strong>. Usa la palabra <em>Puntero</em>.</li>
+                        <li>Cuando el motor ejecuta <code>a.valor</code> en la línea 4, ¿qué tipo de consulta (LHS o RHS) está realizando sobre <code>a</code>?</li>
+                        <li><strong>PREGUNTA CRÍTICA:</strong> ¿Por qué la modificación que hice a la variable <code>b</code> afectó a la variable <code>a</code>? Si me dices "porque son el mismo objeto", <span class="text-red-500 uppercase">estás reprobado</span>. Usa los conceptos de memoria que te enseñé.</li>
+                    </ol>
+                `,
+          renderVisuals: () => {
+            return `
+                        <div class="h-full flex flex-col fade-in">
+                            <h3 class="text-xl mb-4 border-b border-red-500 pb-2 text-red-500">EXAMEN FINAL - FASE 0</h3>
+                            
+                            <div class="bg-gray-900 p-6 rounded border-2 border-red-900 text-lg font-mono mb-8 relative shadow-[0_0_20px_rgba(255,0,60,0.2)]">
+                                <span class="absolute top-2 right-2 text-xs text-red-500/50">READ_ONLY_ACCESS</span>
+                                <div class="text-gray-400">1 | <span class="text-purple-400">var</span> <span class="text-yellow-300">a</span> <span class="text-white">=</span> <span class="text-white">{</span> <span class="text-yellow-200">valor</span><span class="text-white">:</span> <span class="text-blue-400">1</span> <span class="text-white">};</span></div>
+                                <div class="text-gray-400">2 | <span class="text-purple-400">var</span> <span class="text-yellow-300">b</span> <span class="text-white">=</span> <span class="text-yellow-300">a</span><span class="text-white">;</span></div>
+                                <div class="text-gray-400">3 | <span class="text-yellow-300">b</span><span class="text-white">.</span><span class="text-yellow-200">valor</span> <span class="text-white">=</span> <span class="text-blue-400">2</span><span class="text-white">;</span></div>
+                                <div class="text-gray-400">4 | <span class="text-gray-500">console.log(</span><span class="text-yellow-300">a</span><span class="text-white">.</span><span class="text-yellow-200">valor</span><span class="text-gray-500">);</span> <span class="text-gray-600">// ¿Qué imprime y por qué a nivel V8?</span></div>
+                            </div>
+                            
+                            <div class="mt-auto border border-[#00ff41] p-4 bg-black/50 text-sm">
+                                <p class="text-[#00ff41] font-bold mb-2">> TERMINAL_INPUT_REQUIRED:</p>
+                                <p class="text-gray-400 italic">"Analiza la respuesta en tu mente. Cuando creas tener la respuesta perfecta fundamentada en Punteros y Heap, indícamelo en el chat y la destrozaré o te daré mi aprobación." - JAVASCRIPT_MUERTE</p>
+                            </div>
+                        </div>
+                    `;
+          },
+        },
+      ];
+
+      let currentStep = 0;
+
+      const dialogueBox = document.getElementById("dialogue-box");
+      const visualizerStage = document.getElementById("visualizer-stage");
+      const stepCounter = document.getElementById("step-counter");
+      const nextBtn = document.getElementById("next-btn");
+
+      function renderStep(index) {
+        if (index >= steps.length) return;
+
+        const step = steps[index];
+
+        // Render Dialogue
+        dialogueBox.innerHTML = step.dialogue;
+
+        // Render Visuals
+        visualizerStage.innerHTML = step.renderVisuals();
+
+        // Update UI
+        stepCounter.textContent = `PASO ${index + 1}/${steps.length}`;
+
+        if (index === steps.length - 1) {
+          nextBtn.textContent = "FINALIZAR MODULO";
+          nextBtn.classList.replace("bg-[#00ff41]", "bg-red-600");
+          nextBtn.classList.replace("text-black", "text-white");
+          nextBtn.classList.replace("hover:bg-white", "hover:bg-red-500");
+          nextBtn.classList.add("neon-border-red");
+          nextBtn.classList.remove("neon-border");
+        }
+
+        // Execute specific JS for the step if needed
+        if (step.postRender) {
+          step.postRender();
+        }
+      }
+
+      nextBtn.addEventListener("click", () => {
+        if (currentStep < steps.length - 1) {
+          currentStep++;
+          renderStep(currentStep);
+        } else {
+          alert(
+            "Módulo visual finalizado. Ve al chat y responde mi examen, novato.",
+          );
+        }
+      });
+
+      // Add keyboard support
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          nextBtn.click();
+        }
+      });
+
+      // Initialize first step automatically after brief delay for effect
+      setTimeout(() => {
+        renderStep(currentStep);
+      }, 1000);
+    </script>
+  </body>
+</html>
