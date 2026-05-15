@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAVASCRIPT_MUERTE: V8 Engine Simulator</title>
+    <style>
+      :root {
+        --bg-base: #050505;
+        --bg-panel: #111116;
+        --border-glow: #330000;
+        --text-main: #e0e0e0;
+        --text-muted: #888;
+        --accent-red: #ff2a2a;
+        --accent-green: #00ff66;
+        --accent-cyan: #00e5ff;
+        --accent-yellow: #ffcc00;
+        --font-mono: "Courier New", Courier, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--bg-base);
+        color: var(--text-main);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      header {
+        background: #000;
+        border-bottom: 1px solid var(--accent-red);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      header h1 {
+        color: var(--accent-red);
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px rgba(255, 42, 42, 0.5);
+      }
+
+      .main-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 200px;
+        gap: 2px;
+        background: #222;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .panel {
+        background: var(--bg-panel);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+
+      .panel-title {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      /* Editor de Código */
+      .code-container {
+        font-family: var(--font-mono);
+        font-size: 1rem;
+        line-height: 1.6;
+        position: relative;
+      }
+
+      .code-line {
+        padding: 2px 10px;
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+        white-space: pre;
+      }
+
+      .code-line.active {
+        background: rgba(0, 229, 255, 0.1);
+        border-left-color: var(--accent-cyan);
+        text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+      }
+
+      .keyword {
+        color: #c678dd;
+      }
+      .function {
+        color: #61afef;
+      }
+      .variable {
+        color: #e5c07b;
+      }
+      .number {
+        color: #d19a66;
+      }
+      .this-kw {
+        color: var(--accent-red);
+        font-weight: bold;
+      }
+      .comment {
+        color: #5c6370;
+        font-style: italic;
+      }
+
+      /* Call Stack */
+      .stack-container {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 10px;
+        flex: 1;
+        justify-content: flex-start;
+        padding-top: 20px;
+      }
+
+      .stack-frame {
+        border: 1px solid #444;
+        background: #1a1a24;
+        padding: 15px;
+        border-radius: 4px;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.4s forwards;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .frame-header {
+        font-weight: bold;
+        color: var(--accent-green);
+        margin-bottom: 10px;
+        border-bottom: 1px dashed #444;
+        padding-bottom: 5px;
+        font-family: var(--font-mono);
+      }
+
+      .frame-memory {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        color: var(--text-main);
+      }
+
+      .binding-this {
+        color: var(--accent-red);
+        font-weight: bold;
+        background: rgba(255, 0, 0, 0.1);
+        padding: 2px 5px;
+        border-radius: 3px;
+        display: inline-block;
+        margin-top: 5px;
+      }
+
+      /* Memory Heap */
+      .heap-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-content: flex-start;
+      }
+
+      .heap-object {
+        border: 1px solid #555;
+        background: #202028;
+        padding: 10px;
+        border-radius: 8px;
+        min-width: 150px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        animation: fadeIn 0.5s forwards;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      .object-title {
+        color: var(--accent-yellow);
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        text-align: center;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #444;
+        padding-bottom: 4px;
+      }
+
+      .object-props {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+      }
+
+      .pointer {
+        color: var(--accent-cyan);
+      }
+
+      /* Terminal/Explicación */
+      .terminal-panel {
+        grid-column: 1 / -1;
+        background: #0a0a0f;
+        border-top: 2px solid #333;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .terminal-content {
+        padding: 20px;
+        font-family: var(--font-mono);
+        font-size: 0.95rem;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .explanation {
+        color: var(--text-main);
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+
+      .console-output {
+        color: #ccc;
+        background: #000;
+        padding: 10px;
+        border-left: 3px solid var(--text-muted);
+        margin-top: 10px;
+      }
+
+      .console-output span {
+        color: var(--accent-red);
+        font-weight: bold;
+      }
+
+      /* Controles */
+      .controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 10px 20px;
+        background: #111;
+      }
+
+      button {
+        background: transparent;
+        color: var(--accent-cyan);
+        border: 1px solid var(--accent-cyan);
+        padding: 8px 16px;
+        font-family: var(--font-mono);
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: all 0.2s;
+      }
+
+      button:hover:not(:disabled) {
+        background: var(--accent-cyan);
+        color: #000;
+        box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+      }
+
+      button:disabled {
+        color: #555;
+        border-color: #555;
+        cursor: not-allowed;
+      }
+
+      /* Efecto de Puntero visual */
+      .highlight-ref {
+        background: rgba(0, 229, 255, 0.2);
+        border: 1px solid var(--accent-cyan);
+        border-radius: 3px;
+        padding: 0 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>JAVASCRIPT_MUERTE // V8 Execution Simulator</h1>
+      <div style="color: var(--accent-cyan); font-family: monospace">
+        Fase 3: `this` y Dynamic Binding
+      </div>
+    </header>
+
+    <div class="main-container">
+      <!-- Panel de Código -->
+      <div class="panel">
+        <div class="panel-title">Código Fuente (AST Parseado)</div>
+        <div class="code-container" id="code-view">
+          <div class="code-line" id="line-1">
+            <span class="keyword">function</span>
+            <span class="function">foo</span>() {
+          </div>
+          <div class="code-line" id="line-2">
+            <span class="keyword">var</span> a = <span class="number">2</span>;
+          </div>
+          <div class="code-line" id="line-3">
+            <span class="this-kw">this</span>.bar();
+          </div>
+          <div class="code-line" id="line-4">}</div>
+          <div class="code-line" id="line-5">
+            <span class="keyword">function</span>
+            <span class="function">bar</span>() {
+          </div>
+          <div class="code-line" id="line-6">
+            <span class="function">console.log</span>(
+            <span class="this-kw">this</span>.a );
+          </div>
+          <div class="code-line" id="line-7">}</div>
+          <div class="code-line" id="line-8">
+            <span class="function">foo</span>();
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel del Call Stack -->
+      <div class="panel">
+        <div class="panel-title">Call Stack (LIFO)</div>
+        <div class="stack-container" id="call-stack">
+          <!-- Frames renderizados dinámicamente -->
+        </div>
+      </div>
+
+      <!-- Panel del Memory Heap -->
+      <div class="panel">
+        <div class="panel-title">Memory Heap & Global Object</div>
+        <div class="heap-container" id="memory-heap">
+          <!-- Objetos renderizados dinámicamente -->
+        </div>
+      </div>
+
+      <!-- Panel de Terminal y Explicación -->
+      <div class="terminal-panel">
+        <div class="panel-title" style="margin: 10px 20px 0">
+          Motor V8: Análisis de ECMA-262 y YDKJS
+        </div>
+        <div class="terminal-content" id="terminal">
+          <div class="explanation">
+            Presiona "Siguiente Paso" para comenzar el análisis exhaustivo del
+            código.
+          </div>
+        </div>
+        <div class="controls">
+          <button id="btn-prev" disabled>Paso Anterior</button>
+          <button id="btn-next">Siguiente Paso</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        step: 0,
+        maxSteps: 7,
+      };
+
+      // DOM Elements
+      const lines = document.querySelectorAll(".code-line");
+      const callStack = document.getElementById("call-stack");
+      const memoryHeap = document.getElementById("memory-heap");
+      const terminal = document.getElementById("terminal");
+      const btnNext = document.getElementById("btn-next");
+      const btnPrev = document.getElementById("btn-prev");
+
+      // Definición de cada paso de la animación
+      const steps = [
+        {
+          // Paso 0: Inicial
+          lines: [],
+          stack: [],
+          heap: [],
+          terminal: `<div class="explanation">
+                    <strong>Fase Inicial:</strong> El código está escrito, pero aún no se ha ejecutado.
+                    Recuerda la regla de oro de YDKJS: <code>this</code> <strong>NO</strong> es un enlace al Scope Léxico.
+                    Es un enlace dinámico (Dynamic Binding) que se resuelve <em>exclusivamente</em> en el momento de la ejecución basándose en el <strong>Call-Site</strong> (el lugar donde se invoca la función).
+                    <br><br>Vamos a compilar y ejecutar.
+                </div>`,
+          console: null,
+        },
+        {
+          // Paso 1: Creación Global (Hoisting)
+          lines: [1, 5],
+          stack: [
+            {
+              name: "Global Execution Context",
+              memory: "LexicalEnv: window<br>VariableEnv: window",
+              thisBinding: "window (Global Object)",
+            },
+          ],
+          heap: [
+            {
+              id: "obj-window",
+              title: "Global Object (window)",
+              props:
+                'foo: <span class="pointer">@0x001</span><br>bar: <span class="pointer">@0x002</span>',
+            },
+            {
+              id: "obj-foo",
+              title: "Function: foo (@0x001)",
+              props: "[[Scope]]: Global<br>[[Code]]: ...",
+            },
+            {
+              id: "obj-bar",
+              title: "Function: bar (@0x002)",
+              props: "[[Scope]]: Global<br>[[Code]]: ...",
+            },
+          ],
+          terminal: `<div class="explanation">
+                    <strong>Paso 1: Fase de Creación (Compilador & Scope).</strong><br>
+                    El motor hace la lectura inicial (Hoisting). Construye el Global Execution Context.
+                    <br><br>
+                    <strong>Memoria:</strong> Las funciones no caben en el Stack. El motor V8 construye los objetos de función en el <span style="color: var(--accent-yellow)">Memory Heap</span> en las direcciones de memoria <code>@0x001</code> y <code>@0x002</code>. 
+                    <br>En el objeto Global (<code>window</code>), se guardan los <strong>Punteros</strong> hacia estas direcciones.
+                </div>`,
+          console: null,
+        },
+        {
+          // Paso 2: Ejecución de foo()
+          lines: [8],
+          stack: [
+            {
+              name: "Global Execution Context",
+              memory: "foo: @0x001<br>bar: @0x002",
+              thisBinding: "window",
+            },
+            {
+              name: "foo() Execution Context",
+              memory: "a: undefined (hoisted)",
+              thisBinding:
+                '<span style="color: var(--accent-red)">window</span>',
+            },
+          ],
+          heap: [
+            {
+              id: "obj-window",
+              title: "Global Object (window)",
+              props:
+                'foo: <span class="pointer">@0x001</span><br>bar: <span class="pointer">@0x002</span>',
+            },
+            {
+              id: "obj-foo",
+              title: "Function: foo (@0x001)",
+              props: "[[Scope]]: Global",
+            },
+            {
+              id: "obj-bar",
+              title: "Function: bar (@0x002)",
+              props: "[[Scope]]: Global",
+            },
+          ],
+          terminal: `<div class="explanation">
+                    <strong>Paso 2: Evaluación del Call-Site -> <code>foo()</code></strong><br>
+                    Llegamos a la línea 8. Se invoca <code>foo()</code>. <br>
+                    <strong>Análisis ECMA-262 (Reference Type):</strong> El motor evalúa la expresión <code>foo</code>. Es un "Environment Record", no un "Property Reference". No hay un objeto base (no hay un <code>punto .</code> antes de la llamada).
+                    <br><br>
+                    <strong>YDKJS - Default Binding:</strong> Dado que es una invocación plana y suelta, el motor aplica la regla del "Default Binding". El Slot <code>this</code> en el Contexto de Ejecución de <code>foo</code> se rellena automáticamente con el Objeto Global (<code>window</code>).
+                </div>`,
+          console: null,
+        },
+        {
+          // Paso 3: var a = 2;
+          lines: [2],
+          stack: [
+            {
+              name: "Global Execution Context",
+              memory: "foo: @0x001<br>bar: @0x002",
+              thisBinding: "window",
+            },
+            {
+              name: "foo() Execution Context",
+              memory: '<span style="color: var(--accent-yellow)">a: 2</span>',
+              thisBinding: "window",
+            },
+          ],
+          heap: [
+            {
+              id: "obj-window",
+              title: "Global Object (window)",
+              props:
+                'foo: <span class="pointer">@0x001</span><br>bar: <span class="pointer">@0x002</span>',
+            },
+            {
+              id: "obj-foo",
+              title: "Function: foo (@0x001)",
+              props: "[[Scope]]: Global",
+            },
+            {
+              id: "obj-bar",
+              title: "Function: bar (@0x002)",
+              props: "[[Scope]]: Global",
+            },
+          ],
+          terminal: `<div class="explanation">
+                    <strong>Paso 3: Lexical Environment Interno -> <code>var a = 2;</code></strong><br>
+                    El motor realiza una consulta LHS (Left-Hand Side) para <code>a</code>. Al ser declarada con <code>var</code>, la variable vive <strong>exclusivamente</strong> en el <em>Lexical Environment</em> de <code>foo()</code>. 
+                    <br><br>
+                    <span style="color: var(--accent-red); font-weight: bold;">Cuidado aquí:</span> <code>a</code> NO se asigna a <code>this</code>. <code>a</code> es una variable de Scope, no una propiedad de un objeto. El Global Object sigue intacto.
+                </div>`,
+          console: null,
+        },
+        {
+          // Paso 4: this.bar();
+          lines: [3],
+          stack: [
+            {
+              name: "Global Execution Context",
+              memory: "foo: @0x001<br>bar: @0x002",
+              thisBinding: "window",
+            },
+            {
+              name: "foo() Execution Context",
+              memory: "a: 2",
+              thisBinding: '<span class="highlight-ref">window</span>',
+            },
+          ],
+          heap: [
+            {
+              id: "obj-window",
+              title: "Global Object (window)",
+              props:
+                'foo: <span class="pointer">@0x001</span><br>bar: <span class="pointer">@0x002</span>',
+            },
+            {
+              id: "obj-foo",
+              title: "Function: foo (@0x001)",
+              props: "[[Scope]]: Global",
+            },
+            {
+              id: "obj-bar",
+              title: "Function: bar (@0x002)",
+              props: "[[Scope]]: Global",
+            },
+          ],
+          terminal: `<div class="explanation">
+                    <strong>Paso 4: La Invocación Engañosa -> <code>this.bar();</code></strong><br>
+                    El motor evalúa <code>this.bar()</code>. Como establecimos en el Paso 2, <code>this</code> dentro de <code>foo</code> equivale a <code>window</code>.<br>
+                    Por lo tanto, la invocación real que ve el motor es: <code>window.bar()</code>.
+                    <br><br>
+                    ¿Existe <code>bar</code> en <code>window</code>? Sí, el compilador lo puso ahí en el Paso 1. Así que la función se llama correctamente.
+                </div>`,
+          console: null,
+        },
+        {
+          // Paso 5: bar() Execution Context
+          lines: [5],
+          stack: [
+            {
+              name: "Global Execution Context",
+              memory: "foo: @0x001<br>bar: @0x002",
+              thisBinding: "window",
+            },
+            {
+              name: "foo() Execution Context",
+              memory: "a: 2",
+              thisBinding: "window",
+            },
+            {
+              name: "bar() Execution Context",
+              memory: "(vacío)",
+              thisBinding:
+                '<span style="color: var(--accent-red)">window</span>',
+            },
+          ],
+          heap: [
+            {
+              id: "obj-window",
+              title: "Global Object (window)",
+              props:
+                'foo: <span class="pointer">@0x001</span><br>bar: <span class="pointer">@0x002</span>',
+            },
+            {
+              id: "obj-foo",
+              title: "Function: foo (@0x001)",
+              props: "[[Scope]]: Global",
+            },
+            {
+              id: "obj-bar",
+              title: "Function: bar (@0x002)",
+              props: "[[Scope]]: Global",
+            },
+          ],
+          terminal: `<div class="explanation">
+                    <strong>Paso 5: Call-Site de bar() y Contexto de Ejecución.</strong><br>
+                    Se crea un nuevo Frame en el Call Stack para <code>bar()</code>. 
+                    <br><br>
+                    <strong>Análisis ECMA-262:</strong> ¿Cuál fue el Call-Site? Fue <code>this.bar()</code> (o <code>window.bar()</code>). Como hubo un objeto "Base" explícito antes del punto, el motor aplica el <strong>Implicit Binding</strong>. El Slot <code>this</code> de <code>bar()</code> se rellena con el objeto Base.
+                    <br>Resultado: <code>this</code> dentro de <code>bar</code> también es <code>window</code>.
+                </div>`,
+          console: null,
+        },
+        {
+          // Paso 6: console.log(this.a)
+          lines: [6],
+          stack: [
+            {
+              name: "Global Execution Context",
+              memory: "...",
+              thisBinding: "window",
+            },
+            {
+              name: "foo() Execution Context",
+              memory: "a: 2",
+              thisBinding: "window",
+            },
+            {
+              name: "bar() Execution Context",
+              memory: "(vacío)",
+              thisBinding: '<span class="highlight-ref">window</span>',
+            },
+          ],
+          heap: [
+            {
+              id: "obj-window",
+              title: "Global Object (window)",
+              props:
+                'foo: <span class="pointer">@0x001</span><br>bar: <span class="pointer">@0x002</span>',
+            },
+            {
+              id: "obj-foo",
+              title: "Function: foo (@0x001)",
+              props: "[[Scope]]: Global",
+            },
+            {
+              id: "obj-bar",
+              title: "Function: bar (@0x002)",
+              props: "[[Scope]]: Global",
+            },
+          ],
+          terminal: `<div class="explanation">
+                    <strong>Paso 6: El Fracaso del Lexical Scope Cruzado.</strong><br>
+                    El motor intenta evaluar <code>console.log(this.a)</code>.
+                    <br><br>
+                    1. Revisa el valor de <code>this</code> en el contexto de <code>bar</code>. Es <code>window</code>.<br>
+                    2. Hace una consulta de propiedad: <code>window.a</code>.<br>
+                    3. Busca <code>a</code> en el Global Object del Memory Heap.<br>
+                    <span style="color: var(--accent-red)">¿Hay un puntero o valor "a" en el Global Object? NO.</span> La variable <code>a</code> está encerrada herméticamente en el Lexical Environment de <code>foo()</code> en el Stack.
+                    <br><br>
+                    El intento del desarrollador de usar <code>this</code> como un puente para cruzar entornos léxicos fracasa estrepitosamente.
+                </div>`,
+          console: `> Buscando window.a... \n> No encontrado en Global Object.\n> <span>undefined</span>`,
+        },
+        {
+          // Paso 7: Fin
+          lines: [],
+          stack: [
+            {
+              name: "Global Execution Context",
+              memory: "...",
+              thisBinding: "window",
+            },
+          ],
+          heap: [
+            {
+              id: "obj-window",
+              title: "Global Object (window)",
+              props:
+                'foo: <span class="pointer">@0x001</span><br>bar: <span class="pointer">@0x002</span>',
+            },
+            {
+              id: "obj-foo",
+              title: "Function: foo (@0x001)",
+              props: "[[Scope]]: Global",
+            },
+            {
+              id: "obj-bar",
+              title: "Function: bar (@0x002)",
+              props: "[[Scope]]: Global",
+            },
+          ],
+          terminal: `<div class="explanation">
+                    <strong>Conclusión (Fase 3 Completada).</strong><br>
+                    El Call Stack se vacía (Garbage Collection elimina los contextos de foo y bar).
+                    <br><br>
+                    Has visto visualmente el pilar de YDKJS: <strong>Every time a function is invoked, a new execution context is created. This context contains information about where the function was called from (the call-stack), how the function was invoked, what parameters were passed, etc. One of the properties of this record is the <code>this</code> reference.</strong>
+                    <br><br>
+                    El <code>this</code> no es magia. Es mecánica del motor. Y NUNCA es un puente hacia un Scope Léxico.
+                </div>`,
+          console: null,
+        },
+      ];
+
+      function renderStep() {
+        const data = steps[state.step];
+
+        // 1. Update Code Highlight
+        lines.forEach((line) => line.classList.remove("active"));
+        data.lines.forEach((lineNum) => {
+          const el = document.getElementById(`line-${lineNum}`);
+          if (el) el.classList.add("active");
+        });
+
+        // 2. Update Call Stack
+        callStack.innerHTML = "";
+        data.stack.forEach((frame) => {
+          const el = document.createElement("div");
+          el.className = "stack-frame";
+          el.innerHTML = `
+                    <div class="frame-header">${frame.name}</div>
+                    <div class="frame-memory"><strong>Local Memory/Scope:</strong><br>${frame.memory}</div>
+                    <div class="binding-this">this = ${frame.thisBinding}</div>
+                `;
+          callStack.appendChild(el);
+        });
+
+        // 3. Update Memory Heap
+        memoryHeap.innerHTML = "";
+        data.heap.forEach((obj) => {
+          const el = document.createElement("div");
+          el.className = "heap-object";
+          el.id = obj.id;
+          el.innerHTML = `
+                    <div class="object-title">${obj.title}</div>
+                    <div class="object-props">${obj.props}</div>
+                `;
+          memoryHeap.appendChild(el);
+        });
+
+        // 4. Update Terminal/Explanation
+        let termHtml = data.terminal;
+        if (data.console) {
+          termHtml += `<div class="console-output">${data.console.replace(/\n/g, "<br>")}</div>`;
+        }
+        terminal.innerHTML = termHtml;
+
+        // Scroll terminal to bottom if needed
+        terminal.scrollTop = 0;
+
+        // Update Controls
+        btnPrev.disabled = state.step === 0;
+        btnNext.disabled = state.step === state.maxSteps;
+      }
+
+      btnNext.addEventListener("click", () => {
+        if (state.step < state.maxSteps) {
+          state.step++;
+          renderStep();
+        }
+      });
+
+      btnPrev.addEventListener("click", () => {
+        if (state.step > 0) {
+          state.step--;
+          renderStep();
+        }
+      });
+
+      // Init
+      renderStep();
+    </script>
+  </body>
+</html>
